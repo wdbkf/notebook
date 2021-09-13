@@ -499,6 +499,9 @@
 
   ![image-20210912200956908](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210912200956908.png)
 
+  - 为什么计算机都是以补码的方式来运算的？
+    - 因为补码把正数和负数统一起来了。
+
 - 位运算符
 
   - java 中有 7 个位运算(&、|、^、~、>>、<<和 >>>)
@@ -519,3 +522,322 @@
 
     - 特别说明：没有 <<< 符号
 
+
+
+## 第四章 程序控制结构
+
+### 1. 顺序控制
+
+![image-20210913142857587](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210913142857587.png)
+
+### 2. 分支控制（if，else，switch）
+
+- 嵌套分支
+
+  在一个分支结构中又完整的嵌套了另一个完整的分支结构，里面的分支的结构称为内层分支外面的分支结构称为外层分支。老师建议: 不要超过 3 层 （可读性不好）
+
+  ```java
+  /**
+   * 参加歌手比赛，如果初赛成绩大于 8.0 进入决赛，否则提示淘汰。
+   * 并且根据性别提示进入男子组或女子组。 输入成绩和性别，
+   * 进行判断和输出信息
+   */
+  import java.util.Scanner; //表示把 java.util 下的 Scanner 类导入
+  public class NestedIf{
+  	public static void main(String[] args) {
+  		
+  		System.out.println("请输入初赛成绩：");
+  		Scanner myScanner = new Scanner(System.in);
+  		double score = myScanner.nextDouble();
+  		if(score > 8.0){
+  			System.out.println("进决赛！请输入性别：");
+  			char gender = myScanner.next().charAt(0); //先接收字符串，再接受字符串的第一个字符
+  			if(gender == '男'){ 
+  				System.out.println("进入男子组！");
+  			}else{
+  				System.out.println("进入女子组!");
+  			}
+  		}else{
+  			System.out.println("淘汰!");
+  		}
+  		
+  	}
+  
+  }
+  ```
+
+
+
+- switch 分支结构
+
+  - ![image-20210913154955887](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210913154955887.png)
+
+  - 流程图（注意如果语句块没写break，那么就会直接执行下一个语句块，不会判断条件）
+
+    ![image-20210913155302763](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210913155302763.png)
+
+    
+
+  - switch 注意事项和细节讨论
+
+    ![image-20210913160603359](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210913160603359.png)
+
+  - 练习
+
+    ```java
+    import java.util.Scanner; //表示把 java.util 下的 Scanner 类导入
+    /**
+     * 1.对学生成绩大于等于 60 分的，输出"合格"。低于 60 分的，输出"不合格"。(注：输入的成绩不能大于 100),  提示 成绩/60
+     * 2.根据用于指定月份，打印该月份所属的季节。3,4,5  春季 6,7,8  夏季	9,10,11 秋季 12, 1, 2 冬季 [课堂练习,  提示 使用穿透 ]
+     */
+    
+    public class SwitchExercise{
+    	public static void main(String[] args) {
+            // 第1题
+    		// System.out.println("Input score:");
+    		// Scanner myScanner = new Scanner(System.in);
+    		// double score = myScanner.nextDouble();
+    		// if(score >= 0.0 && score <= 100){
+    		// 	switch((int)(score/60)){
+    		// 		case 0:
+    		// 			System.out.println("不合格");
+    		// 		case 1:
+    		// 			System.out.println("合格");
+    		//     }
+    		// }else{
+    		// 	System.out.println("输入的成绩在0-100");
+    		// }
+    		
+            //第2题
+    		System.out.println("Input month:");
+    		Scanner myScanner = new Scanner(System.in);
+    		int month = myScanner.nextInt();
+    		switch(month){
+    			case 3:
+    			case 4:
+    			case 5:
+    				System.out.println("春季");
+    				break;
+    			case 6:
+    			case 7:
+    			case 8:
+    				System.out.println("夏季");
+    				break;
+    			case 9:
+    			case 10:
+    			case 11:
+    				System.out.println("秋季");
+    				break;
+    			case 12:
+    			case 1:
+    			case 2:
+    				System.out.println("冬季");
+    				break;
+    			default:
+    				System.out.println("您输入的月份不对（1-12）");
+    		}
+    	}
+    }
+    ```
+
+    
+
+  - switch 和 if 的比较
+    - 如果判断的具体数值不多，而且符合 byte、 short 、int、 char, enum[枚举], String 这 6 种类型。虽然两个语句都可以使用，建议使用 swtich 语句；
+    - 其他情况：对区间判断，对结果为 boolean 类型判断，使用 if，if 的使用范围更广。
+
+### 3. 循环控制（for，while，dowhile，多重循环）
+
+- for循环![image-20210913171341746](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210913171341746.png)
+  - 注意事项和细节说明
+    - 循环条件是返回一个布尔值的表达式
+    - for(;循环判断条件;) 中的初始化和变量迭代可以写到其它地方，但是两边的分号不能省略。
+      - for(;;){}   //表示一个无限循环，死循环
+    - 循环初始值可以有多条初始化语句，但要求类型一样，并且中间用逗号隔开，循环变量迭代也可以有多条变量迭代语句，中间用逗号隔开。
+
+- 两个编程思想(技巧)
+  1. 化繁为简 : 即将复杂的需求，拆解成简单的需求，逐步完成	编程 = 思想 --练习->  代码
+  2. 先死后活 : 先考虑固定的值（常量），然后转成可以灵活变化的值（用变量代替，这样即使以后常量一直变，只需改下变量就行，更加灵活，利于思考）
+
+- while 循环控制
+
+  ![image-20210913184003742](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210913184003742.png)
+
+  - 注意事项和细节说明
+    1. 循环条件是返回一个布尔值的表达式
+    2. while 循环是先判断再执行语句
+
+- do..while 循环控制
+
+  - 基本语法
+    循环变量初始化; 
+
+    do{
+    				循环体(语句); 
+
+    ​				循环变量迭代;
+
+    }while(循环条件);
+
+  - 说明
+    1. do while 是关键字
+    2. 也有循环四要素, 只是位置不一样
+    3. 先执行，再判断，也就是说，一定会至少执行一次
+    4. 循环条件是返回一个布尔值的表达式
+    5. 最后 有一个 分号 ;
+    6. while 和 do..while 区别举例:  要账
+
+  - ```java
+    /**
+     	*如果李三不还钱，则老韩将一直使出五连鞭，直到李三说还钱为止
+     	*[System.out.println("老韩问：还钱吗？y/n")]	do...while .. 
+     */
+    import java.util.Scanner;
+    public class DoWhileExercise{
+    	public static void main(String[] args) {
+    		Scanner myScanner = new Scanner(System.in);
+    		char result = ' ';
+    		do{
+    			System.out.println("老韩问：还钱吗？y/n");
+    			result = myScanner.next().charAt(0);
+    		}while(result != 'y');
+    		System.out.println("已还！");
+    
+    	}
+    
+    }
+    ```
+
+    
+
+- 多重循环控制(难点! 重点!)
+
+  1. 将一个循环放在另一个循环体内，就形成了嵌套循环。其中，for ,while ,do…while 均可以作为外层循环和内层循环。【建议一般使用两层，最多不要超过 3 层, 否则，代码的可读性很差】
+
+  2. 实质上，嵌套循环就是把内层循环当成外层循环的循环体。当只有内层循环的循环条件为 false 时，才会完全跳出内层循环，才可结束外层的当次循环，开始下一次的循环[听不懂，走案例]。
+
+  3. 设外层循环次数为 m 次，内层为 n 次，则内层循环体实际上需要执行 m*n 次。
+  
+  ```java
+  /**
+   * 1)统计 3 个班成绩情况，每个班有 5 名同学，
+   * 求出各个班的平均分和所有班级的平均分[学生的成绩从键盘输入]。
+   * 2)统计三个班及格人数，每个班有 5 名同学。
+   */
+  import java.util.Scanner;
+  public class MulForExercise01{
+  	public static void main(String[] args) {
+  		Scanner myScanner = new Scanner(System.in);
+  		double sum = 0.0; //一个班总分
+  		double sum2 = 0.0; //三个班总分
+  		double score = 0.0; // 分数
+  		int eligibility = 0; //及格人数
+          int classNum = 3; //班级数
+          int stuNum = 5;//学生数
+  		for(int j = 1;j <= classNum;j++){ //班级
+  			for(int i = 1;i <= stuNUm;i++){ //学生
+  				System.out.println("请输入"+j+"班第"+i+"位同学成绩：");
+  				score = myScanner.nextDouble();
+  				if(score >= 60){
+  					eligibility++;
+  				}
+  				sum += score;
+  			}
+  			System.out.println(j+"班的平均分为" + sum/stuNum);
+  			sum2 += sum;
+  			sum = 0.0;
+  		}
+  		System.out.println("所有班级的平均分为" + sum2/(classNum * stuNum));	
+  		System.out.println("三个班及格人数为" + eligibility);	
+  
+  	}
+  }
+  
+  ```
+  
+  (一定记住要写完后，应用”先死后活“，将一些常量变量化，更灵活)
+
+     ```java
+     /**
+      * 请编写一个程序，
+      * 可以接收一个整数,表示层数（totalLevel），
+      * 打印出金字塔。(Stars.java) [化繁为简, 先死后活]
+      */
+     public class Stars{
+     	public static void main(String[] args) {
+     		//打印金字塔一边
+     		// int totalLevel = 7;//层数
+     		// for(int i = 1;i <= totalLevel;i++){
+     		// 	for(int j = 1;j <= i;j++){
+     		// 		System.out.print("*");
+     		// 	}
+     		// 	System.out.println();
+     		// }
+     		
+     		//打印实金字塔
+     		// int totalLevel = 4;//层数
+     		// for(int i = 1;i <= totalLevel;i++){
+     		// 	for(int j = i + 1;j <= totalLevel;j++){
+     		// 		System.out.print(" ");
+     		// 	}
+     		// 	for(int k = 1 ; k <= (2*i - 1) ; k++){
+     		// 		System.out.print("*");				
+     		// 	}		
+     		// 	System.out.println();
+     		// }
+     
+     
+     		//打印空三角
+     		int totalLevel = 4;//层数
+     		for(int i = 1;i <= totalLevel;i++){   //控制层数
+     			for(int j = i + 1;j <= totalLevel;j++){ //打印空格
+     				System.out.print(" ");
+     			}
+     			for(int k = 1 ; k <= (2*i - 1) ; k++){ 
+     				if(i == 1 || i == totalLevel){  //首行和末行打印全部星星
+     					System.out.print("*");
+     				}else{ //中间行打印一头一尾星星，其中打印空格
+     					System.out.print("*");
+     					for(int m = 1;m <= (2*i - 3);m++){
+     						System.out.print(" ");
+     					}
+     					System.out.print("*");	
+     					//k = 2*i - 1;
+     					break;
+     				}
+     				//对于空心处理，老师的方法更好
+     				// if(k == 1 || k == 2*i - 1 || i == totalLevel){
+     				// 	System.out.print("*");
+     				// }else{
+     				// 	System.out.print(" ");
+     				// }
+     				
+     			}		
+     			System.out.println();
+     		}
+     
+     
+     	}
+     
+     }
+     ```
+
+
+
+### 4. break
+
+- break 语句用于终止某个语句块的执行，一般使用在 switch 或者循环[for , while , do-while]中
+
+- 注意事项和细节说明
+
+  ![image-20210914003320941](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210914003320941.png)
+
+### 5. continue
+
+- continue 语句用于结束本次循环，继续执行下一次循环。
+- continue 语句出现在多层嵌套的循环语句体中时，可以通过标签指明要跳过的是哪一层循环 , 这个和前面的标签的使用的规则一样.
+
+### 6. return
+
+- return 使用在方法，表示跳出所在的方法，在讲解方法的时候，会详细的介绍，这里我们简单的提一下。
+- 注意：如果 return 写在 main 方法，退出程序
