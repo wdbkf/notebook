@@ -656,7 +656,7 @@
     - 循环初始值可以有多条初始化语句，但要求类型一样，并且中间用逗号隔开，循环变量迭代也可以有多条变量迭代语句，中间用逗号隔开。
 
 - 两个编程思想(技巧)
-  1. 化繁为简 : 即将复杂的需求，拆解成简单的需求，逐步完成	编程 = 思想 --练习->  代码
+  1. 化繁为简 : 即将复杂的需求，拆解成简单的需求，逐步完成	编程 = 思想 -----练习---->  代码
   2. 先死后活 : 先考虑固定的值（常量），然后转成可以灵活变化的值（用变量代替，这样即使以后常量一直变，只需改下变量就行，更加灵活，利于思考）
 
 - while 循环控制
@@ -786,7 +786,6 @@
      		// 	System.out.println();
      		// }
      
-     
      		//打印空三角
      		int totalLevel = 4;//层数
      		for(int i = 1;i <= totalLevel;i++){   //控制层数
@@ -821,8 +820,56 @@
      
      }
      ```
-
-
+  
+  - 打印空心菱形
+  
+    ```java
+    public class Stars02{
+    	public static void main(String[] args) {
+    		//打印空心菱形     [将菱形分上下部分]
+    		int totalLevel = 12;//菱形上部分层数
+    		for(int i = 1;i <= totalLevel;i++){   //控制上部分层数
+    			for(int j = 1;j <= totalLevel - i;j++){ //打印前面的空格
+    				System.out.print(" ");
+    			}
+    			for(int k = 1 ; k <= (2*i - 1) ; k++){ //打印菱形中的星星和空格
+    				//对于空心处理，老师的方法更好
+    				if(k == 1 || k == 2*i - 1){
+    					System.out.print("*");
+    				}else{
+    					System.out.print(" ");
+    				}
+    				if(i == totalLevel && k == 2*i - 1){ //菱形下部分就打印个倒三角就行，代码和上部分差不多，只要控制循环变量初始化值或循环条件等就可以实现；
+    					System.out.println();
+    					for(int m = 1;m <= totalLevel - 1;m++){ //控制下部分层数
+    						for(int n = 1;n <= m;n++){ //打印前面的空格
+    							System.out.print(" ");
+    						}
+    						// 1 7  ((totalLevel-1)-m)*2+1 
+    						// 2 5    （动手写下来更容易找到规律，要动手分析）
+    						// 3 3
+    						// 4 1
+    						for(int l = 1 ; l <= (((totalLevel-1)-m)*2+1) ; l++){ //打印菱形中的星星和空格
+    							if(l == 1 || l == ((totalLevel-1)-m)*2+1){
+    								System.out.print("*");
+    							}else{
+    								System.out.print(" ");
+    							}
+    						}
+    						System.out.println();
+    					}
+    				}			
+    			}		
+    			System.out.println();
+    		}
+    
+    	}
+    
+    }
+    
+    ```
+  
+    
 
 ### 4. break
 
@@ -840,4 +887,284 @@
 ### 6. return
 
 - return 使用在方法，表示跳出所在的方法，在讲解方法的时候，会详细的介绍，这里我们简单的提一下。
+
 - 注意：如果 return 写在 main 方法，退出程序
+
+  
+
+## 第五章 数组、排序和查找
+
+### 1. 数组
+
+- 数组可以存放多个同一类型的数据。数组也是一种数据类型，是引用类型；
+
+- 数组的使用
+
+  - ![image-20210914182037355](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210914182037355.png)
+  - - 先声明数组
+      语法:数据类型 数组名[];	也可以  数据类型[] 数组名; int a[];  或者 int[] a;
+    - 创建数组
+      语法: 数组名=new 数据类型[大小]; 
+  - 静态初始化![image-20210914184203005](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210914184203005.png)
+  - 或  数据类型 数组名[] = new 数据类型[]{值1,值2,....}
+
+
+
+- 数组使用注意事项和细节
+  1. 数组是多个相同类型数据的组合，实现对这些数据的统一管理
+  2. 数组中的元素可以是任何数据类型，包括基本类型和引用类型，但是不能混用。
+  3. 数组创建后，如果没有赋值，有默认值
+     int 0，short 0, byte 0, long 0, float 0.0,double 0.0，char \u0000，boolean false，String null
+  4. 使用数组的步骤 1. 声明数组并开辟空间 2 给数组各个元素赋值 3 使用数组
+  5. 数组的下标是从 0 开始的。
+  6. 数组下标必须在指定范围内使用，否则报：下标越界异常，比如int [] arr=new int[5];  则有效下标为 0-4
+  7. 数组属引用类型，数组型数据是对象(object) 
+
+- 数组赋值机制 (重要)
+
+  1. 基本数据类型赋值，这个值就是具体的数据，而且相互不影响。（值拷贝）
+     int n1 = 2; int n2 = n1;
+
+  2. 数组在默认情况下是引用传递，赋的值是地址。（地址拷贝/引用传递）
+
+     看一个案例，并分析数组赋值的内存图(重点, 难点. )。
+
+     //代码  int[] arr1 = {1,2,3};   int[] arr2 = arr1;（在栈中把地址复制一份，所以指向堆的数据空间是同一个）
+
+     ![image-20210914193405097](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210914193405097.png)
+
+- 数组添加/扩容
+
+  ```java
+  import java.util.Scanner;
+  public class ArrayAdd02 {
+  
+      //编写一个 main 方法
+      public static void main(String[] args) {
+          /*
+          要求：实现动态的给数组添加元素效果，实现对数组扩容。ArrayAdd.java
+          1.原始数组使用静态分配 int[] arr = {1,2,3}
+          2.增加的元素 4，直接放在数组的最后 arr = {1,2,3,4}
+          3.用户可以通过如下方法来决定是否继续添加，添加成功，是否继续？y/n
+  
+          思路分析
+          1. 定义初始数组 int[] arr = {1,2,3}//下标 0-2
+          2.定义一个新的数组 int[] arrNew = new int[arr.length+1];
+          3.遍历 arr 数组，依次将 arr 的元素拷贝到 arrNew 数组
+          4.将 4 赋给 arrNew[arrNew.length - 1] = 4;把 4 赋给 arrNew 最后一个元素
+          5.让 arr  指向 arrNew ;	arr = arrNew;  那么 原来 arr 数组就被销毁；（指向arrNew后，原来arr 数组指向的空间因为没有被地址引用了，就会被JVM当作垃圾销毁）
+          6.创建一个 Scanner 可以接受用户输入
+          7.因为用户什么时候退出，不确定，老师使用 do-while + break 来控制
+          */
+  
+          Scanner myScanner = new Scanner(System.in);
+          //初始化数组 
+          int[] arr = {1,2,3};
+  
+          do {
+              int[] arrNew = new int[arr.length + 1];
+              //遍历 arr 数组，依次将 arr 的元素拷贝到 arrNew 数组
+              for(int i = 0; i < arr.length; i++) { 
+                  arrNew[i] = arr[i];
+              }
+              System.out.println("请输入你要添加的元素"); 
+              int addNum = myScanner.nextInt();
+              //把 addNum 赋给 arrNew 最后一个元素
+              arrNew[arrNew.length - 1] = addNum;
+              //让 arr 指向 arrNew, 
+              arr = arrNew;
+              //输出 arr 看看效果
+              System.out.println("====arr 扩容后元素情况===="); 
+              for(int i = 0; i < arr.length; i++) {
+                  System.out.print(arr[i] + "\t");
+              }
+              //问用户是否继续
+              System.out.println("是否继续添加 y/n"); 
+              char key = myScanner.next().charAt(0); 
+              if( key == 'n') { //如果输入 n ,就结束
+                  break;
+              }
+          }while(true);
+  
+  
+          System.out.println("你退出了添加...");
+      }
+  }
+  ```
+  
+  
+
+- 数组缩减
+
+  ```java
+  import java.util.Scanner;
+  public class ArrayReduce{
+  	public static void main(String[] args) {
+  		Scanner myScanner = new Scanner(System.in);
+  		int arr[] = {1,2,3,4,5};
+  
+  		do{
+  			int[] arrNew = new int[arr.length - 1];
+  			for(int i = 0; i < arrNew.length; i++){
+  				arrNew[i] = arr[i];
+  			}
+  			arr = arrNew;
+  			System.out.println("缩减后的数组为：");
+  			for(int j = 0; j < arr.length; j++){			
+  				System.out.print(arr[j] + "\t");
+  			}
+  			System.out.println("是否继续缩减? y/n");
+  			char answer = myScanner.next().charAt(0);
+  			if(answer == 'y'){
+  				if(arr.length == 1){
+  					System.out.println("最后一个元素,不能再缩减");
+  					break;
+  				}
+  			}else if(answer == 'n'){
+  					break;
+  			}
+  
+  		}while(true);
+  	}
+  
+  }
+  ```
+
+  
+
+### 2. 排序
+
+- 内部排序:
+
+  指将需要处理的所有数据都加载到内部存储器中进行排序。包括(交换式排序法、选择式排序法和插入式排序法)；
+
+- 外部排序法:
+
+  数据量过大，无法全部加载到内存中，需要借助外部存储进行排序。包括(合并排序法和直接合并排序法)。
+
+### 3. 查找
+
+- 在 java 中，我们常用的查找有两种:
+  1. 顺序查找 
+  2. 二分查找【二分法，我们放在算法讲解】
+
+### 4. 多维数组
+
+- 二维数组的使用
+  ```java
+  public class TwoDimensionalArray01 {
+  
+  //编写一个 main 方法
+  public static void main(String[] args) {
+  
+      /*
+      请用二维数组输出如下图形
+      0 0 0 0 0 0
+      0 0 1 0 0 0
+      0 2 0 3 0 0
+      0 0 0 0 0 0
+      */
+      
+      //什么是二维数组：
+      //老韩解读
+      //1. 从定义形式上看 int[][]
+      //2. 可以这样理解，原来的一维数组的每个元素是一维数组, 就构成二维数组
+      int[][] arr = { {0, 0, 0, 0, 0, 0},
+                      {0, 0, 1, 0, 0, 0},
+                      {0, 2, 0, 3, 0, 0},
+                      {0, 0, 0, 0, 0, 0} };
+  
+  
+      //关于二维数组的关键概念
+      //(1)
+      System.out.println("二维数组的元素个数=" + arr.length);
+      //(2) 二维数组的每个元素是一维数组,  所以如果需要得到每个一维数组的值
+      //	还需要再次遍历
+      //(3) 如果我们要访问第 (i+1)个一维数组的第 j+1 个值 arr[i][j];
+      //	举例 访问 3, =》 他是第 3 个一维数组的第 4 个值 arr[2][3]
+      System.out.println("第 3 个一维数组的第 4 个值=" + arr[2][3]); //3
+  
+  
+      //输出二维图形
+      for(int i = 0; i < arr.length; i++) {//遍历二维数组的每个元素
+          //遍历二维数组的每个元素(数组)
+          //老韩解读
+          //1. arr[i] 表示 二维数组的第 i+1 个元素 比如 arr[0]：二维数组的第一个元素
+          //2. arr[i].length 得到 对应的 每个一维数组的长度
+          for(int j = 0; j < arr[i].length; j++) {
+              System.out.print(arr[i][j] + " "); //输出了一维数组
+          }
+          System.out.println();//换行
+          }
+      }
+  }
+  
+  ```
+  
+- 使用方式 1: 动态初始化
+
+  1. 语法: 类型[][] 数组名=new 类型[大小]\[大小]
+  2. 比如: int a[]\[]=new int[2]\[3]
+
+  - 二维数组在内存的存在形式  (重点！！！)
+
+    ![image-20210914224117402](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210914224117402.png)
+
+- 使用方式 2: 动态初始化
+
+  先声明：类型 数组名[]\[];	
+
+  再定义(开辟空间)  数组名 = new 类型[大小]\[大小] 
+
+  赋值(有默认值，比如 int	类型的就是 0)
+
+- 使用方式 3: 动态初始化-列数不确定(二维数组中每个一维数组的个数不确定)
+  - 语法: 类型[][] 数组名=new 类型[大小]\[]
+  - 比如: int[]\[] arr = new int[3]\[]  
+    - 创建 二维数组，一共有 3 个一维数组，但是每个一维数组还没有开数据空间，需要遍历 arr 每个一维数组，给每个一维数组开空间 new，如果没有给一维数组 new ,那么 arr[i]就是 null 。
+
+- 使用方式 4: 静态初始化
+
+  定义 类型 数组名[][]	= {{值 1,值 2..},{值 1,值 2..},{值 1,值 2..}}
+
+- 杨辉三角应用
+
+  ```java
+  /**
+   * 使用二维数组打印一个 10 行杨辉三角
+   */
+  
+  public class YangHui{
+  	public static void main(String[] args) {
+  		int[][] arr = new int[10][];  //初始化，不确定列数
+  
+  		for(int i = 0; i < arr.length; i++){ 
+  			arr[i] = new int[i+1]; //给二维数组的元素一维数组分配空间 
+  			for(int j = 0; j < arr[i].length; j++){ //赋值
+  				if(j == 0 || j == arr[i].length - 1){  //找到杨辉三角规律
+  					arr[i][j] = 1;
+  				}else{
+  					arr[i][j] = arr[i-1][j-1] + arr[i-1][j];
+  				}		
+  			}
+  		}
+  
+  		for(int m = 0; m < arr.length; m++){ //输出
+  			for(int n = 0; n < arr[m].length; n++){
+  				System.out.print(arr[m][n] + " ");
+  			}
+  			System.out.println();
+  		}
+  	}
+  }
+  ```
+
+  
+
+- 二维数组使用细节和注意事项
+  1. 一维数组的声明方式有: int[] x	或者 int x[]
+  2. 二维数组的声明方式有:
+     int[]\[] y 或者	int[] y[]	或者 int	y[]\[]
+  3. 二维数组实际上是由多个一维数组组成的，它的各个一维数组的长度可以相同，也可以不相同。比如： map[][] 是一个二维数组
+     int map[]\[] = {{1,2},{3,4,5}}
+     由 map[0] 是一个含有两个元素的一维数组 ，map[1] 是一个含有三个元素的一维数组构成，我们也称为列数不等的二维数组。
