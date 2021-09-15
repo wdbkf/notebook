@@ -1163,8 +1163,204 @@
 
 - 二维数组使用细节和注意事项
   1. 一维数组的声明方式有: int[] x	或者 int x[]
+  
   2. 二维数组的声明方式有:
      int[]\[] y 或者	int[] y[]	或者 int	y[]\[]
+     
   3. 二维数组实际上是由多个一维数组组成的，它的各个一维数组的长度可以相同，也可以不相同。比如： map[][] 是一个二维数组
      int map[]\[] = {{1,2},{3,4,5}}
      由 map[0] 是一个含有两个元素的一维数组 ，map[1] 是一个含有三个元素的一维数组构成，我们也称为列数不等的二维数组。
+     
+     
+
+## 第六章  面向对象编程(基础部分)
+
+### 1.类与对象
+
+- java 设计者 引入 类与对象(OOP) ，根本原因 就是现有的技术，不能完美的解决新的需求。
+
+  ![](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915121706563.png)
+
+- 1. 类是抽象的，概念的，代表一类事物，比如人类,猫类.., 即它是数据类型.
+  2. 对象是具体的，实际的，代表一个具体事物, 即 是实例.
+  3. 类是对象的模板，对象是类的一个个体，对应一个实例
+
+- 对象在内存中存在形式    (重要的!!)
+
+![image-20210915133647044](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915133647044.png)
+
+- 属性/成员变量/字段
+  - 从概念或叫法上看： 成员变量 = 属性 = field(字段) （即 成员变量是用来表示属性的) ;
+  - 属性是类的一个组成部分，一般是基本数据类型，也可是引用类型(对象，数组)；
+  - 注意事项和细节说明:
+    1. 属性的定义语法同变量，示例：访问修饰符 属性类型 属性名；这里老师简单的介绍访问修饰符： 控制属性的访问范围
+       有四种访问修饰符 public, proctected, 默认, private ,后面我会详细介绍
+    2. 属性的定义类型可以为任意类型，包含基本类型或引用类型
+    3. 属性如果不赋值，有默认值，规则和数组一致。具体说: int   0，short 0, byte 0, long 0, float 0.0, double 0.0，char  \u0000， boolean  false，String  null
+
+- 如何创建对象
+
+  1. 先声明再创建
+     Cat cat ; //声明对象 cat cat = new Cat(); //创建
+
+  2. 直接创建
+     Cat cat = new Cat();
+
+- 类和对象的内存分配机制  (重要)
+
+![image-20210915141206682](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915141206682.png)
+
+![image-20210915141215462](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915141215462.png)
+
+Java 内存的结构分析
+
+1. 栈： 一般存放基本数据类型(局部变量)
+2. 堆： 存放对象(Cat cat ,  数组等)
+3. 方法区：常量池(常量，比如字符串)， 类加载信息
+
+Java 创建对象的流程简单分析  （重要！！！）
+
+1. 先加载 Person 类信息 (属性和方法信息,  只会加载一次)
+2. 在堆中分配空间, 进行默认初始化(看规则)
+3. 把地址赋给 p , p 就指向对象
+4. 进行指定初始化， 比如 p.name =”小明”	p.age = 80
+
+### 2. 成员方法
+
+- 基本介绍
+
+  在某些情况下，我们要需要定义成员方法(简称方法)。比如人类:除了有一些属性外( 年龄，姓名..),我们人类还有一些行为比如:可以说话、跑步..,通过学习，还可以做算术题
+
+- 方法的调用机制原理：(重要!-示意图!!!)
+
+  ![image-20210915152723116](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915152723116.png)
+
+- 成员方法的好处
+  1. 提高代码的复用性
+  2. 可以将实现的细节封装起来，然后供其他用户来调用即可
+
+- 成员方法的定义
+
+  访问修饰符 返回数据类型 方法名（形参列表..） {//方法体
+
+  ​				语句；
+  ​				return 返回值;（不是必须的）
+  }
+
+- 注意事项和使用细节
+  1. 一个方法最多有一个返回值	[思考，如何返回多个结果 返回数组 ]
+  2. 返回类型可以为任意类型，包含基本类型或引用类型(数组，对象)
+  3. 如果方法要求有返回数据类型，则方法体中最后的执行语句必须为 return 值; 而且要求返回值类型必须和 return 的值类型一致或兼容
+  4. 如果方法是 void，则方法体中可以没有 return 语句，或者 只写  return ;
+  5. ![image-20210915160810954](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915160810954.png)
+  6. ![image-20210915161011330](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915161011330.png)
+
+- 练习中确实发现自己的一些错误
+
+  - 调用方法时直接用类调用。。。。。 要注意啊 实例化对象
+
+  - 把类写在了public类里边。。。。 定义类要写外边啊
+
+  - ```java
+    public class ClassTest{
+    	public static void main(String[] args) {
+    		printChar pc = new printChar();
+    		pc.printCharSquare(4,4,'#');		
+    	}
+    }
+    
+    class printChar{
+    
+    	public void printCharSquare(int lines,int cols,char c){
+    		for(int i = 0; i < lines; i++){
+    			for(int j = 0; j < cols; j++){
+    				System.out.print(c);
+    			}
+    			System.out.println();
+    		}
+    	}
+    
+    }
+    
+    ```
+
+### 3. 成员方法传参机制
+
+- 案例1：基本数据类型，传递的是值（值拷贝），形参的任何改变不影响实参！
+
+  ![image-20210915201202963](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915201202963.png)
+
+  
+
+- 案例2：引用类型传递的是地址（传递也是值，但是值是地址），可以通过形参影响实参
+
+  ![image-20210915202350415](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915202350415.png)
+
+  ![image-20210915203028597](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915203028597.png)
+
+### 4.方法递归调用
+
+- 案例（程序执行到一个方法时就会开辟一个独立的栈空间）
+
+  ![image-20210915210508677](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915210508677.png)
+
+- 案例2：阶乘
+
+  ![image-20210915212740051](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915212740051.png)
+
+- 递归重要规则
+
+  ![image-20210915213016048](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915213016048.png)
+
+- 练习（斐波那契数）
+
+  ```java
+  public class RecursionExercise01{
+  	public static void main(String[] args) {
+  			GetFib f = new GetFib();
+  			int n = 2;
+  			int val = f.getFib(n);
+  			if(val != -1){
+  				System.out.println(val);
+  			}			
+  	}
+  }
+  
+  class GetFib{
+  /*
+  请使用递归的方式求出斐波那契数 1,1,2,3,5,8,13...给你一个整数 n，求出它的值是多思路分析
+  1.当 n = 1  斐波那契数 是 1
+  2.当 n = 2  斐波那契数 是 1
+  3.当 n >= 3	斐波那契数 是前两个数的和
+  4.这里就是一个递归的思路
+  */
+  	public int getFib(int n){
+  		if(n >= 1){
+  			if(n == 1 || n == 2){
+  				return 1;
+  			}else{
+  				return getFib(n-1) + getFib(n-2);
+  			}
+  
+  		}else{
+  			System.out.println("请输入大于等于1的整数！！");
+  			return -1;
+  		}
+  		
+  	}
+  }
+  
+  ```
+
+  
+
+### 5. 重载
+
+### 6. 可变参数
+
+### 7. 作用域
+
+### 8. 构造器
+
+### 9. this
+
