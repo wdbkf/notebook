@@ -1298,7 +1298,7 @@ Java 创建对象的流程简单分析  （重要！！！）
 
   ![image-20210915203028597](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915203028597.png)
 
-### 4.方法递归调用
+### 4.方法递归调用(重难点)
 
 - 案例（程序执行到一个方法时就会开辟一个独立的栈空间）
 
@@ -1312,7 +1312,7 @@ Java 创建对象的流程简单分析  （重要！！！）
 
   ![image-20210915213016048](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210915213016048.png)
 
-- 练习（斐波那契数）
+- 练习（斐波那契数）(猴子吃桃问题)
 
   ```java
   public class RecursionExercise01{
@@ -1352,15 +1352,300 @@ Java 创建对象的流程简单分析  （重要！！！）
   
   ```
 
+  ```java
+  public class RecursionExercise02{
+  	public static void main(String[] args) {
+  		Monkey m = new Monkey();
+  		int days = 1;
+  		int totalPeach = m.eatPeach(days);
+  		if(totalPeach != -1){
+  			System.out.println("第" + days + "天有" + totalPeach + "桃子");
+  		}	
+  	}
+  }
+  /*
+  猴子吃桃子问题：有一堆桃子，猴子第一天吃了其中的一半，并再多吃了一个！
+  以后每天猴子都吃其中的一半，然后再多吃一个。当到第 10 天时，
+  想再吃时（即还没吃），发现只有 1 个桃子了。问题：最初共多少个桃子？
+  10 1    要找规则、规律！！！
+  9  4
+  8  10
+  7  22
+  .  .
+  .  .
+   */
+  class Monkey{
+  	public int eatPeach(int days){  //返回每天剩余多少桃子，那第一天剩余就是总的
+  		if(days == 10){
+  			return 1;
+  		}else if(days >= 1 && days <= 9){
+  			return (eatPeach(days + 1) + 1) * 2;
+  		}else{
+  			System.out.println("days在1-10");
+  			return -1;
+  		}
+  	}
+  }
+  ```
+  
+  
+
+- 迷宫问题 （难点！！！！！！！！！）
+
+  ```java
+  public class MiGong{
+  	public static void main(String[] args) {
+  		int[][] map	= new int[8][7];
+  		for(int i = 0; i < 7; i++){
+  			map[0][i] = 1;
+  			map[7][i] = 1;		
+  		}	
+  		for(int i = 1; i < 7; i++){
+  			map[i][0] = 1;
+  			map[i][6] = 1;		
+  		}
+  		map[3][1] = 1;
+  		map[3][2] = 1;	
+  		System.out.println("===初始地图===");
+  		for(int i = 0; i < map.length; i++){
+  			for(int j = 0; j < map[i].length; j++){
+  				System.out.print(map[i][j] + " ");
+  			}
+  			System.out.println();
+  		}
+  		System.out.println("===行走路线图===");
+  		Mouse m = new Mouse();
+  		m.outOfMigong(map,1,1);
+  		for(int i = 0; i < map.length; i++){
+  			for(int j = 0; j < map[i].length; j++){
+  				System.out.print(map[i][j] + " ");
+  			}
+  			System.out.println();
+  		}
+  	}
+  }
+  
+  class Mouse{
+  //使用  递归回溯  的思想来解决老鼠出迷宫
+  
+  //老师的解读
+  //1. outOfMigong 方法就是专门来找出迷宫的路径
+  //2. 如果找到，就返回 true ,否则返回 false
+  //3. map 就是二维数组，即表示迷宫
+  //4. i,j 就是老鼠的位置，初始化的位置为(1,1)
+  //5. 因为我们是递归的找路，所以我先规定 map 数组的各个值的含义
+  //	 0 表示可以走 1 表示障碍物 2 表示已走且可以走 3 表示走过，但是走不通是死路
+  //6. 当 map[6][5] =2 就说明找到通路,就可以结束，否则就继续找.
+  //7. 先确定老鼠找路策略 下->右->上->左
+  //
+  	public boolean outOfMigong(int[][] map,int i,int j){
+  		if(map[6][5] == 2){
+  			return true;
+  		}else{
+  			if(map[i][j] == 0){//当前这个位置 0,说明表示可以走
+  				map[i][j] = 2;//我们假定可以走通
+  				//使用找路策略，来确定该位置是否真的可以走通
+  			 	if(outOfMigong(map,i+1,j)){//先走下
+  			 		return  true;
+  			 	}else if(outOfMigong(map,i,j+1)){//右
+  			 		return  true;
+  			 	}else if(outOfMigong(map,i-1,j)){
+  			 		return  true;
+  			 	}else if(outOfMigong(map,i,j-1)){
+  			 		return  true;
+  			 	}else{
+  			 		map[i][j] = 3;
+  					return false;	
+  			 	}
+  			}else{//map[i][j] = 1 , 2, 3 
+  				return false;
+  			}
+  		}
+  		
+  	}
+  }
+  
+  ```
+
   
 
 ### 5. 重载
 
+- java 中允许同一个类中，多个同名方法的存在，但要求 形参列表不一致！
+- 重载的好处
+  1. 减轻了起名的麻烦
+  2. 减轻了记名的麻烦
+
+- 注意事项和使用细节
+
+  ![image-20210916144558541](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916144558541.png)
+
+  - 说明：如果 方法名和形参列表相同，单纯改变返回类型不构成重载； 如果方法名相同， 且形参列表只是改变参数名也不构成重载。
+
 ### 6. 可变参数
+
+-  基本概念
+
+  java 允许将同一个类中多个同名同功能但参数个数不同的方法，封装成一个方法。就可以通过可变参数实现。
+
+- 基本语法
+
+  访问修饰符 返回类型 方法名(数据类型...  形参名) {
+  }
+
+- 案例
+
+  ```java
+  public class VarParameter01 {
+      //编写一个 main 方法
+      public static void main(String[] args) {
+  
+  
+          HspMethod m = new HspMethod(); 
+          System.out.println(m.sum(1, 5, 100)); //106 
+          System.out.println(m.sum(1,19)); //20
+      }
+  }
+  class HspMethod {
+      //可以计算 2 个数的和，3 个数的和 ， 4. 5， 。。
+      //可以使用方法重载
+      // public int sum(int n1, int n2) {//2 个数的和
+      //	return n1 + n2;
+      // }
+      // public int sum(int n1, int n2, int n3) {//3 个数的和
+      //	return n1 + n2 + n3;
+      // }
+      // public int sum(int n1, int n2, int n3, int n4) {//4 个数的和
+      //	return n1 + n2 + n3 + n4;
+      // }
+      //.....
+      //上面的三个方法名称相同，功能相同, 参数个数不同-> 使用可变参数优化
+      //老韩解读
+      //1. int... 表示接受的是可变参数，类型是 int ,即可以接收多个 int(0-多)
+      //2. 使用可变参数时，可以当做数组来使用 即 nums 可以当做数组
+      //3. 遍历 nums 求和即可
+      public int sum(int... nums) {
+      //System.out.println("接收的参数个数=" + nums.length); 
+          int res = 0;
+      	for(int i = 0; i < nums.length; i++) { 
+              res += nums[i];
+      	}
+      	return res;
+      }
+  }
+  ```
+
+- 注意事项和使用细节
+
+  ![image-20210916160521798](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916160521798.png)
 
 ### 7. 作用域
 
-### 8. 构造器
+- 基本使用
+
+  ![image-20210916162204255](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916162204255.png)
+
+  (局部变量必须赋值后才能使用，因为没有默认值！)
+
+- 注意事项和细节使用
+
+  ![image-20210916163009673](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916163009673.png)
+
+  ![image-20210916163015545](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916163015545.png)
+
+  (属性生命周期较长，伴随着对象的创建而创建，伴随着对象的销毁而销毁。局部变量，生命周期较短，伴随着它的代码块的执行而创建，伴随着代码块的结束而销毁。即在一次方法调用过程中!！)
+
+### 8. 构造器(构造方法)
+
+- 基本介绍
+
+  构造方法又叫构造器(constructor)，是类的一种特殊的方法，它的主要作用是 完成对新对象的初始化；
+
+- 基本语法
+
+  [修饰符] 方法名(形参列表){ 
+
+  ​		方法体;
+  }
+
+- 说明
+  1. 构造器的修饰符可以默认，也可以是 public protected private
+  2. 构造器没有返回值
+  3. 方法名 和类名字必须一样
+  4. 参数列表 和 成员方法一样的规则
+  5. 构造器的调用, 由系统完成
+  6. 在创建对象时，系统会自动的调用该类的构造器完成对象的初始化。
+
+- 注意事项和细节使用
+
+  ![image-20210916170041090](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916170041090.png)
+
+  ![image-20210916170045881](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916170045881.png)
+
+  （javap指令能对给定的class文件提供的字节代码进行反编译！！）
+
+- 对象创建的流程分析 （面试题）
+
+  ![image-20210916174004418](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916174004418.png)
+
+  ![image-20210916174039961](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916174039961.png)
 
 ### 9. this
+
+- 什么是this
+
+  java虚拟机会给每个对象分配 this，代表当前对象。
+
+- 深入理解this
+
+  案例![image-20210916180724461](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916180724461.png)
+
+  ![image-20210916180735591](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210916180735591.png)
+
+- this 的注意事项和使用细节
+
+  1. this 关键字可以用来访问本类的属性、方法、构造器
+  2. this 用于区分当前类的属性和局部变量
+  3. 访问成员方法的语法：this.方法名(参数列表);
+  4. 访问构造器语法： this(参数列表);     注意只能在构造器中使用  (即只能在构造器中访问另外一个构造器, 必须放在第一条语句)      [重要]
+  5. this 不能在类定义的外部使用，只能在类定义的方法中使用。
+
+- 练习
+
+  ```java
+  public class TestPerson{
+  	public static void main(String[] args) {
+  		Person p1 = new Person("jack",22);
+  		Person p2 = new Person("jck",22);
+  		System.out.println(p1.compareTo(p2)); 
+  
+  	}
+  }
+  
+  /**
+   * 定义Person 类，里面有 name、age 属性，并提供 compareTo 比较方法，用于判断是否和另一个人相等，提供测试类 TestPerson
+   * 用于测试, 名字和年龄完全一样，就返回 true,  否则返回 false
+   */
+  class Person{
+  
+  	String name;
+  	int age;
+  
+  	public Person(String name, int age){
+  		this.name = name;
+  		this.age = age;
+  	}
+  
+  	public boolean compareTo(Person p){
+  		// if(this.name.equals(p.name) && this.age == p.age){
+  		// 	return true;
+  		// }else{
+  		// 	return false;
+  		// }
+  		return this.name.equals(p.name) && this.age == p.age;
+  	}
+  }
+  ```
+
+  
 
