@@ -1649,3 +1649,290 @@ Java 创建对象的流程简单分析  （重要！！！）
 
   
 
+## 第七章 面向对象编程(中级部分)
+
+### 1. IDEA
+
+- ![image-20210917145013681](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917145013681.png)
+- IDEA 常用快捷键
+  - 删除当前行, 默认是 ctrl + Y 
+  - 复制当前行,  ctrl + d
+  - 补全代码	alt + /
+  - 添加注释和取消注释 ctrl + /  【第一次是添加注释，第二次是取消注释】
+  - 导入该行需要的类 先配置 auto import ,  然后使用 alt+enter 即可
+  - 快速格式化代码 ctrl + alt + L
+  - 快速运行程序 自己定义 alt + R
+  - 生成构造器等 alt + insert	[提高开发效率]
+  - 查看一个类的层级关系 ctrl + H	[学习继承后，非常有用]
+  - 将光标放在一个方法上，输入 ctrl + B ,  可以定位到方法 [学继承后，非常有用]
+  - 自动的分配变量名 ,  通过 在后面加 .var	（或alt+enter）
+
+- 模板/自定义模板
+
+  ![image-20210917151558001](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917151558001.png)
+
+### 2. 包
+
+- 包的三大作用
+
+  ![image-20210917152200066](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917152200066.png)
+
+- 包基本语法
+
+  ![image-20210917152321298](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917152321298.png)
+
+- 包的本质分析(原理)
+
+  ![image-20210917152652998](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917152652998.png)
+
+- 包的命名
+
+  ![image-20210917153919005](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917153919005.png)
+
+-  常用的包
+
+  一个包下,包含很多的类,java 中常用的包有:
+
+  - java.lang.*	//lang 包是基本包，默认引入，不需要再引入.
+  - java.util.*	//util 包，系统提供的工具包,  工具类，使用 Scanner
+  - java.net.*	//网络包，网络开发
+  - java.awt.*	//是做 java 的界面开发，GUI
+
+- 如何引入包
+
+  老师建议：我们需要使用到哪个类，就导入哪个类即可，不建议使用 *导入
+
+  ![image-20210917154528427](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917154528427.png)
+
+- 注意事项和使用细节
+
+  ![image-20210917155049634](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917155049634.png)
+
+### 3. 访问修饰符
+
+- 基本介绍
+
+  java 提供四种访问控制修饰符号，用于控制方法和属性(成员变量)的访问权限（范围）:
+
+  - 公开级别:用 public 修饰,对外公开
+  - 受保护级别:用 protected 修饰,对子类和同一个包中的类公开
+  - 默认级别:没有修饰符号,向同一个包的类公开.
+  - 私有级别:用 private 修饰,只有类本身可以访问,不对外公开
+
+-  4种访问修饰符的访问范围
+
+  ![image-20210917155336039](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917155336039.png)
+
+- 使用的注意事项
+
+  ![image-20210917155408244](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917155408244.png)
+
+### 4. 封装
+
+- 封装介绍
+
+  ![image-20210917163505692](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917163505692.png)
+
+- 封装的理解和好处
+
+  ![image-20210917163657194](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917163657194.png)
+
+- 封装的实现步骤 (三步)
+
+  ![image-20210917163807008](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917163807008.png)
+
+- 将构造器和setXxx 结合
+
+  - 案例
+
+    ```java
+    //有三个属性的构造器
+    public Person(String name, int age, double salary) {
+        //	this.name = name;
+        //	this.age = age;
+        //	this.salary = salary;
+    	//我们可以将 set 方法写在构造器中，这样仍然可以验证
+        setName(name); 
+        setAge(age); 
+        setSalary(salary);
+    }
+    ```
+
+    
+
+### 5. 继承
+
+- 为什么需要继承
+
+  ![image-20210917185503418](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917185503418.png)
+
+- 继承基本介绍和示意图
+
+  继承可以解决代码复用,让我们的编程更加靠近人类思维.当多个类存在相同的属性(变量)和方法时,可以从这些类中抽象出父类,在父类中定义这些相同的属性和方法，所有的子类不需要重新定义这些属性和方法，只需要通过 extends 来声明继承父类即可。画出继承的示意图:
+
+  ![image-20210917185918303](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917185918303.png)
+
+- 继承的基本语法
+
+  ![image-20210917190441137](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917190441137.png)
+
+- 继承给编程带来的便利
+  - 代码的复用性提高了
+  - 代码的扩展性和维护性提高了
+
+- 继承的深入讨论/细节问题  (重要！！)
+  1. 子类继承了所有的属性和方法，非私有的属性和方法可以在子类直接访问, 但是私有属性和方法不能在子类直接访问，要通过父类提供公共的方法去访问;
+  2. 子类必须调用父类的构造器， 完成父类的初始化
+  3. 当创建子类对象时，不管使用子类的哪个构造器，默认情况下总会去调用父类的无参构造器，如果父类没有提供无参构造器，则必须在子类的构造器中用 super 去指定使用父类的哪个构造器完成对父类的初始化工作，否则，编译不会通过
+  4. 如果希望指定去调用父类的某个构造器，则显式的调用一下 : super(参数列表)
+  5. super 在使用时，必须放在构造器第一行 (super 只能在构造器中使用)
+  6. super() 和 this() 都只能放在构造器第一行，因此这两个方法不能共存在一个构造器
+  7. java 所有类都是 Object 类的子类, Object  是所有类的基类.
+  8. 父类构造器的调用不限于直接父类！将一直往上追溯直到 Object 类(顶级父类)
+  9. 子类最多只能继承一个父类(指直接继承)，即 java 中是单继承机制。思考：如何让 A 类继承 B 类和 C 类？ 【A 继承 B， B 继承 C】
+  10. 不能滥用继承，子类和父类之间必须满足 “is-a” 的逻辑关系
+
+- 子类创建的内存布局 （重要！！）
+
+  ![image-20210917203907199](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917203907199.png)
+
+
+
+### 6. Super
+
+- 基本介绍
+
+  super 代表父类的引用，用于访问父类的属性、方法、构造器；
+
+- 基本语法
+
+  ![image-20210917212219787](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917212219787.png)
+
+- super 给编程带来的便利/细节
+
+  ![image-20210917214258638](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917214258638.png)
+
+  ![image-20210917214302997](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917214302997.png)
+
+  案例：
+
+  ```java
+  package com.hspedu.super_;
+  
+  
+  public class A extends Base{
+  //4 个属性
+  //public int n1 = 100; protected int n2 = 200; int n3 = 300;
+  private int n4 = 400;
+  
+  
+  public A() {}
+  public A(String name) {}
+  public A(String name, int age) {}
+  
+  
+  //	public void cal() {
+  //	System.out.println("A 类的 cal() 方法...");
+  //	}
+  
+  
+  public void test100() {
+  }
+  
+  
+  protected void test200() {
+  }
+  
+  
+  void test300() {
+  }
+  
+  
+  private void test400() {
+  }
+  }
+  package com.hspedu.super_;
+  
+  
+  public class B extends A {
+  
+  
+  public int n1 = 888;
+  
+  
+  //编写测试方法public void test() {
+  //super 的访问不限于直接父类，如果爷爷类和本类中有同名的成员，也可以使用 super 去访问爷爷类的成员；
+  // 如果多个基类(上级类)中都有同名的成员，使用 super 访问遵循就近原则。A->B->C
+  
+  
+  System.out.println("super.n1=" + super.n1); super.cal();
+  }
+  //访问父类的属性 , 但不能访问父类的 private 属性 [案例]super.属性名
+  public void hi() {
+  System.out.println(super.n1 + " " + super.n2 + " " + super.n3 );
+  }
+  public void cal() {
+  System.out.println("B 类的 cal() 方法...");
+  }
+  public void sum() {
+  System.out.println("B 类的 sum()");
+  //希望调用父类-A 的 cal 方法
+  //这时，因为子类 B 没有 cal 方法，因此我可以使用下面三种方式
+  
+  
+  //找 cal 方法时(cal() 和 this.cal())，顺序是:
+  // (1)先找本类，如果有，则调用
+  // (2)如果没有，则找父类(如果有，并可以调用，则调用)
+  // (3)如果父类没有，则继续找父类的父类,整个规则，就是一样的,直到 Object 类
+  // 提示：如果查找方法的过程中，找到了，但是不能访问， 则报错, cannot access
+  //	如果查找方法的过程中，没有找到，则提示方法不存在
+  //cal();
+  this.cal(); //等价 cal
+  
+  
+  //找 cal 方法(super.call()) 的顺序是直接查找父类，其他的规则一样
+  //super.cal();
+  
+  
+  //演示访问属性的规则
+  //n1 和 this.n1 查找的规则是
+  //(1) 先找本类，如果有，则调用
+  //(2) 如果没有，则找父类(如果有，并可以调用，则调用)
+  //(3) 如果父类没有，则继续找父类的父类,整个规则，就是一样的,直到 Object 类
+  // 提示：如果查找属性的过程中，找到了，但是不能访问， 则报错, cannot access
+  //	如果查找属性的过程中，没有找到，则提示属性不存在
+  System.out.println(n1); System.out.println(this.n1);
+  
+  //找 n1 (super.n1) 的顺序是直接查找父类属性，其他的规则一样
+  System.out.println(super.n1);
+  
+  
+  }
+  //访问父类的方法，不能访问父类的 private 方法 super.方法名(参数列表); 
+  public void ok() {
+  	super.test100(); 
+      super.test200(); 
+      super.test300();
+  	//super.test400();//不能访问父类 private 方法
+  }
+  //访问父类的构造器(这点前面用过)：super(参数列表);只能放在构造器的第一句，只能出现一句！ 
+  public	B() {
+      //super();
+      //super("jack", 10);
+      super("jack");
+      }
+  }
+  ```
+
+- super 和 this 的比较
+
+  ![image-20210917215050035](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210917215050035.png)
+
+### 7. overwrite
+
+### 8. 多态
+
+### 9. Object类详解
+
+### 10. 断点调试
+
