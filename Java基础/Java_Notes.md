@@ -1819,107 +1819,124 @@ Java 创建对象的流程简单分析  （重要！！！）
   ```java
   package com.hspedu.super_;
   
+  public class Base { //父类是 Object
   
-  public class A extends Base{
-  //4 个属性
-  //public int n1 = 100; protected int n2 = 200; int n3 = 300;
-  private int n4 = 400;
-  
-  
-  public A() {}
-  public A(String name) {}
-  public A(String name, int age) {}
-  
-  
-  //	public void cal() {
-  //	System.out.println("A 类的 cal() 方法...");
-  //	}
-  
-  
-  public void test100() {
+  	public int n1 = 999; 
+      public int age = 111; 
+      public void cal() {
+  		System.out.println("Base 类的 cal() 方法...");
+  	}
+  	public void eat() {
+  		System.out.println("Base 类的 eat()	");
+  	}
   }
   
-  
-  protected void test200() {
-  }
-  
-  
-  void test300() {
-  }
-  
-  
-  private void test400() {
-  }
-  }
   package com.hspedu.super_;
   
+  public class A extends Base{
+  	//4 个属性
+  	public int n1 = 100;
+      protected int n2 = 200;
+      int n3 = 300;
+  	private int n4 = 400;
+  
+      public A() {}
+      public A(String name) {}
+      public A(String name, int age) {}
+  
+      //	public void cal() {
+      //	System.out.println("A 类的 cal() 方法...");
+      //	}
+  
+      public void test100() {
+      }
+  
+      protected void test200() {
+      }
+  
+      void test300() {
+      }
+  
+      private void test400() {
+      }
+  }
+  
+  
+  package com.hspedu.super_;
   
   public class B extends A {
   
   
-  public int n1 = 888;
+  	public int n1 = 888;
   
   
-  //编写测试方法public void test() {
-  //super 的访问不限于直接父类，如果爷爷类和本类中有同名的成员，也可以使用 super 去访问爷爷类的成员；
-  // 如果多个基类(上级类)中都有同名的成员，使用 super 访问遵循就近原则。A->B->C
+      //编写测试方法
+      public void test() {
+      //super 的访问不限于直接父类，如果爷爷类和本类中有同名的成员，也可以使用 super 去访问爷爷类的成员；
+      // 如果多个基类(上级类)中都有同名的成员，使用 super 访问遵循就近原则。A->B->C
   
+          System.out.println("super.n1=" + super.n1); 
+          super.cal();
+  	}
+      
+      //访问父类的属性 , 但不能访问父类的 private 属性 [案例]super.属性名
+      public void hi() {
+      	System.out.println(super.n1 + " " + super.n2 + " " + super.n3 );
+      }
+      public void cal() {
+      	System.out.println("B 类的 cal() 方法...");
+      }
+      public void sum() {
+      	System.out.println("B 类的 sum()");
+          //希望调用父类-A 的 cal 方法
+          //这时，因为子类 B 没有 cal 方法，因此我可以使用下面三种方式
+          //找 cal 方法时(cal() 和 this.cal())，顺序是:
+          // (1)先找本类，如果有，则调用
+          // (2)如果没有，则找父类(如果有，并可以调用，则调用)
+          // (3)如果父类没有，则继续找父类的父类,整个规则，就是一样的,直到 Object 类
+          // 提示：如果查找方法的过程中，找到了，但是不能访问， 则报错, cannot access
+          //	如果查找方法的过程中，没有找到，则提示方法不存在
+          //cal();
+          this.cal(); //等价 cal
+          //找 cal 方法(super.call()) 的顺序是直接查找父类，其他的规则一样
+          //super.cal();
   
-  System.out.println("super.n1=" + super.n1); super.cal();
+          //演示访问属性的规则
+          //n1 和 this.n1 查找的规则是
+          //(1) 先找本类，如果有，则调用
+          //(2) 如果没有，则找父类(如果有，并可以调用，则调用)
+          //(3) 如果父类没有，则继续找父类的父类,整个规则，就是一样的,直到 Object 类
+          // 提示：如果查找属性的过程中，找到了，但是不能访问， 则报错, cannot access
+          //	如果查找属性的过程中，没有找到，则提示属性不存在
+          System.out.println(n1); 
+          System.out.println(this.n1);
+          //找 n1 (super.n1) 的顺序是直接查找父类属性，其他的规则一样
+          System.out.println(super.n1);
+      }
+      
+      //访问父类的方法，不能访问父类的 private 方法 super.方法名(参数列表); 
+      public void ok() {
+          super.test100(); 
+          super.test200(); 
+          super.test300();
+          //super.test400();//不能访问父类 private 方法
+      }
+      //访问父类的构造器(这点前面用过)：super(参数列表);只能放在构造器的第一句，只能出现一句！ 
+      public	B() {
+          //super();
+          //super("jack", 10);
+          super("jack");
+      }
   }
-  //访问父类的属性 , 但不能访问父类的 private 属性 [案例]super.属性名
-  public void hi() {
-  System.out.println(super.n1 + " " + super.n2 + " " + super.n3 );
-  }
-  public void cal() {
-  System.out.println("B 类的 cal() 方法...");
-  }
-  public void sum() {
-  System.out.println("B 类的 sum()");
-  //希望调用父类-A 的 cal 方法
-  //这时，因为子类 B 没有 cal 方法，因此我可以使用下面三种方式
   
+  //测试类
+  package com.hspedu.super_;
   
-  //找 cal 方法时(cal() 和 this.cal())，顺序是:
-  // (1)先找本类，如果有，则调用
-  // (2)如果没有，则找父类(如果有，并可以调用，则调用)
-  // (3)如果父类没有，则继续找父类的父类,整个规则，就是一样的,直到 Object 类
-  // 提示：如果查找方法的过程中，找到了，但是不能访问， 则报错, cannot access
-  //	如果查找方法的过程中，没有找到，则提示方法不存在
-  //cal();
-  this.cal(); //等价 cal
-  
-  
-  //找 cal 方法(super.call()) 的顺序是直接查找父类，其他的规则一样
-  //super.cal();
-  
-  
-  //演示访问属性的规则
-  //n1 和 this.n1 查找的规则是
-  //(1) 先找本类，如果有，则调用
-  //(2) 如果没有，则找父类(如果有，并可以调用，则调用)
-  //(3) 如果父类没有，则继续找父类的父类,整个规则，就是一样的,直到 Object 类
-  // 提示：如果查找属性的过程中，找到了，但是不能访问， 则报错, cannot access
-  //	如果查找属性的过程中，没有找到，则提示属性不存在
-  System.out.println(n1); System.out.println(this.n1);
-  
-  //找 n1 (super.n1) 的顺序是直接查找父类属性，其他的规则一样
-  System.out.println(super.n1);
-  
-  
-  }
-  //访问父类的方法，不能访问父类的 private 方法 super.方法名(参数列表); 
-  public void ok() {
-  	super.test100(); 
-      super.test200(); 
-      super.test300();
-  	//super.test400();//不能访问父类 private 方法
-  }
-  //访问父类的构造器(这点前面用过)：super(参数列表);只能放在构造器的第一句，只能出现一句！ 
-  public	B() {
-      //super();
-      //super("jack", 10);
-      super("jack");
+  public class Super01 {
+      public static void main(String[] args) { 
+          B b = new B();//子类对象
+          //b.sum();
+          b.test();
       }
   }
   ```
@@ -1930,9 +1947,176 @@ Java 创建对象的流程简单分析  （重要！！！）
 
 ### 7. overwrite
 
+- 基本介绍
+
+  ![image-20210918132937111](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918132937111.png)
+
+- 注意事项和使用细节
+
+  ![image-20210918134827446](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918134827446.png)
+
+- 重写和重载比较
+
+  ![image-20210918135051164](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918135051164.png)
+
 ### 8. 多态
 
-### 9. Object类详解
+- 多[多种]态[状态]基本介绍
+
+  方法或对象具有多种形态。是面向对象的第三大特征，多态是建立在封装和继承基础之上的。
+
+- 多态的具体体现
+
+  - 方法的多态
+
+    重写和重载就体现多态。
+
+  - 对象的多态 (核心，困难，重点)
+
+    ![image-20210918142730008](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918142730008.png)
+
+    ![image-20210918142737174](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918142737174.png)
+
+- 多态注意事项和细节讨论
+
+  - 多态的前提是：两个对象(类)存在继承关系
+
+  - 多态的向上转型
+
+    ![image-20210918145145996](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918145145996.png)
+
+    向上转型调用方法的规则如下:
+
+    - 可以调用父类中的所有成员(需遵守访问权限)
+    - 但是不能调用子类的特有的成员（因为在编译阶段，能调用哪些成员,是由编译类型来决定的！！）
+    - 最终运行效果看子类(运行类型)的具体实现, 即调用方法时，按照从子类(运行类型)开始查找方法，然后调用，规则和前面我们讲的方法调用规则一致。
+
+  - 多态向下转型
+
+    ![image-20210918150625377](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918150625377.png)
+
+    
+
+  - 属性没有重写之说！属性的值看编译类型；（重要）
+  - instanceOf 比较操作符，用于判断对象的运行类型是否为 XX 类型或XX 类型的子类型；
+
+- java 的动态绑定机制   (非常重要！！)
+
+  ![image-20210918162301868](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918162301868.png)
+
+- 多态的应用
+
+  1. 多态数组
+
+     数组的定义类型为父类类型，里面保存的实际元素类型为子类类型；
+
+  2. 多态参数
+
+     ![image-20210918173450561](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918173450561.png)
+
+  
+
+### 9. Object类详解 （面试）
+
+1. equals 方法
+
+   - ==和 equals 的对比    [面试题]
+
+     ![image-20210918174038691](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918174038691.png)
+
+     ![image-20210918175238891](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918175238891.png)
+
+2. hashCode 方法
+
+   ![image-20210918190739507](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918190739507.png)
+
+   - 6 个小结：
+     - 提高具有哈希结构的容器的效率！
+     - 两个引用，如果指向的是同一个对象，则哈希值肯定是一样的！
+     - 两个引用，如果指向的是不同对象，则哈希值是不一样的
+     - 哈希值主要根据地址号来的！ 不能完全将哈希值等价于地址
+
+3. toString 方法
+
+   - 基本介绍
+     默认返回：全类名+@+哈希值的十六进制，【查看 Object  的 toString 方法】
+
+     ```java
+     /*
+     Object 的 toString() 源码
+     (1)getClass().getName() 类的全类名(包名+类名 )
+     (2)Integer.toHexString(hashCode()) 将对象的 hashCode 值转成 16 进制字符串
+     */
+     public String toString() {
+     	return getClass().getName() + "@" + Integer.toHexString(hashCode());
+     }
+     
+     ```
+
+   - 子类往往重写 toString 方法，用于返回对象的属性信息。重写 toString 方法，打印对象或拼接对象时，都会自动调用该对象的 toString 形式.
+
+   - 当直接输出一个对象时， toString 方法会被默认的调用, 比如 System.out.println(monster) ； 就会默认调用
+     monster.toString()
+
+4. finalize 方法 （面试！！）
+
+   - 当对象被回收时，系统自动调用该对象的 finalize 方法（JVM只提供垃圾回收机制，具体一些释放资源的操作需要程序员对finaize方法重写来实现垃圾回收，资源释放）。子类可以重写该方法，做一些释放资源的操作；
+
+   - 什么时候被回收：当某个对象没有任何引用时，则 jvm 就认为这个对象是一个垃圾对象，就会使用垃圾回收机制来销毁该对象，在销毁该对象前，会先调用 finalize 方法。
+
+   - 垃圾回收机制的调用，是由系统来决定(即有自己的 GC 算法), 也可以通过 System.gc() 主动触发垃圾回收机制；
+     老韩提示： 我们在实际开发中，几乎不会运用 finalize ,  所以更多就是为了应付面试. 
+
+     ```java
+     package com.hspedu.object_;
+     
+     //演示 Finalize 的用法
+     public class Finalize_ {
+     	public static void main(String[] args) {
+     
+     
+             Car bmw = new Car("宝马");
+             //这时 car 对象就是一个垃圾,垃圾回收器就会回收(销毁)对象,  在销毁对象前，会调用该对象的 finalize 方法
+             //,程序员就可以在 finalize 中，写自己的业务逻辑代码(比如释放资源：数据库连接,或者打开文件..)
+             //,如果程序员不重写 finalize,那么就会调用 Object 类的 finalize, 即默认处理
+             //,如果程序员重写了 finalize,  就可以实现自己的逻辑
+             bmw = null;
+             System.gc();//主动调用垃圾回收器
+     
+     
+             System.out.println("程序退出了	");
+         }
+     }
+     class Car {
+     	private String name;
+     	//属性, 资源。。
+     	public Car(String name) { 
+             this.name = name;
+         }
+         //重写 finalize @Override
+         protected void finalize() throws Throwable {
+         System.out.println("我们销毁 汽车" + name );
+         System.out.println("释放了某些资源	");
+     
+     }
+     }
+     ```
+
+     
 
 ### 10. 断点调试
 
+- ![image-20210918195248901](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918195248901.png)
+- ![image-20210918195303184](E:\Java_Notes\notebook\Java基础\第一章_Java语言概述.assets\image-20210918195303184.png)
+- 小技巧
+  - 将光标放在某个变量上，可以看到最新的数据。
+  - 断点可以在 debug 过程中，动态的下断点
+
+- 快捷键
+
+  F7(跳入)	F8(跳过)	shift+F8(跳出) F9(resume,执行到下一个断点)
+  F7：跳入方法内
+  F8:	逐行执行代码.
+  shift+F8:	跳出方法
+
+  
