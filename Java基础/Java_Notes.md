@@ -2123,4 +2123,299 @@ Java 创建对象的流程简单分析  （重要！！！）
   F8:	逐行执行代码.
   shift+F8:	跳出方法
 
-  
+
+
+## 第八章 房屋出租系统项目
+
+## 第九章 面向对象编程(高级部分)
+
+### 1. 类变量(静态变量)和类方法
+
+- 什么是类变量
+
+  ![image-20210920152205482](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920152205482.png)
+
+- 如何定义类变量
+
+  ![image-20210920152355891](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920152355891.png)
+
+- 如何访问类变量
+
+  ![image-20210920152432666](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920152432666.png)
+
+  说明：类变量是随着类的加载而创建，所以即使没有创建对象实例也可以访问
+
+- 该类变量最大的特点就是会被类的所有的对象实例共享
+
+- 类变量内存布局
+
+  ![img](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\wps2.png)
+
+- 类变量使用注意事项和细节讨论
+
+  ![image-20210920153236508](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920153236508.png)
+
+  ![image-20210920153248228](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920153248228.png)
+
+
+
+- 类方法基本介绍
+
+  ![image-20210920153730271](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920153730271.png)
+
+- 类方法的调用
+
+  ![image-20210920153759812](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920153759812.png)
+
+- 类方法经典的使用场景
+
+  ![image-20210920154702825](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920154702825.png)
+
+  如果我们希望不创建实例，也可以调用某个方法(即当做工具来使用)，这时，把方法做成静态方法时非常合适。
+
+- 类方法使用注意事项和细节讨论
+
+  ![image-20210920155004503](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920155004503.png)
+
+  ![image-20210920155011048](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920155011048.png)
+
+### 2. 理解main方法语法
+
+- 深入理解main 方法
+
+  ![image-20210920162320847](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920162320847.png)
+
+- 特别提示：
+  - 在 main()方法中，我们可以直接调用 main 方法所在类的静态方法或静态属性。
+  - 但是，不能直接访问该类中的非静态成员，必须创建该类的一个实例对象后，才能通过这个对象去访问类中的非静态成员
+
+- main动态传值
+
+  ![img](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\wps8.png)
+
+### 3. 代码块 (面试)
+
+- 基本介绍
+
+  ![image-20210920163347408](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920163347408.png)
+
+- 基本语法
+
+  ![image-20210920163446475](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920163446475.png)
+
+- 代码块的好处
+
+  ![image-20210920163558588](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920163558588.png)
+
+  重要：代码块调用的顺序优先于构造器。
+
+- 代码块使用注意事项和细节讨论 （面试）
+
+  ![image-20210920164334269](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920164334269.png)
+
+  ![image-20210920170632572](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920170632572.png)
+
+  ![image-20210920171847891](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920171847891.png)
+
+  ![image-20210920172858008](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920172858008.png)
+
+
+
+### 4. 单例设计模式
+
+- 什么是设计模式
+
+  ![image-20210920184051682](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920184051682.png)
+
+- 什么是单例模式
+
+  ![image-20210920184140903](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920184140903.png)
+
+- 单例模式应用实例
+
+  ![image-20210920185429818](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920185429818.png)
+
+```java
+package com.hspedu.single_;
+
+/**
+*  演示饿漢式的單例模式
+*/
+public class SingleTon01 {
+    public static void main(String[] args) {
+    //	GirlFriend xh = new GirlFriend("小红");
+    //	GirlFriend xb = new GirlFriend("小白");
+
+    //通过方法可以获取对象
+    GirlFriend instance = GirlFriend.getInstance();
+    System.out.println(instance);
+
+    GirlFriend instance2 = GirlFriend.getInstance(); 
+    System.out.println(instance2);
+
+    System.out.println(instance == instance2);//T
+    //System.out.println(GirlFriend.n1);
+    }
+}
+
+//有一个类， GirlFriend
+//只能有一个女朋友
+class GirlFriend {
+
+    private String name;
+
+    //public static	int n1 = 100;
+    //为了能够在静态方法中，返回 gf 对象，需要将其修饰为 static
+    //對象，通常是重量級的對象, 餓漢式可能造成創建了對象，但是沒有使用. 
+    private static GirlFriend gf = new GirlFriend("小红红");
+
+    //如何保障我们只能创建一个 GirlFriend  对象
+    
+    //步骤[单例模式-饿汉式]
+    
+    //1. 将构造器私有化
+    //2. 在类的内部直接创建对象(该对象是 static)
+    //3. 提供一个公共的 static 方法，返回 gf 对象
+    private GirlFriend(String name) {
+    	System.out.println("構造器被調用."); 
+        this.name = name;
+    }
+
+    public static GirlFriend getInstance() { 
+        return gf;
+    }
+
+    @Override
+    public String toString() { 
+        return "GirlFriend{" +
+    		"name='" + name + '\'' + '}';
+    }
+
+}
+
+package com.hspedu.single_;
+
+    /**
+    * 演示懶漢式的單例模式
+    */
+public class SingleTon02 {
+    public static void main(String[] args) {
+        //new Cat("大黃");
+        //System.out.println(Cat.n1); 
+        Cat instance = Cat.getInstance(); 
+        System.out.println(instance);
+
+        //再次調用 getInstance
+        Cat instance2 = Cat.getInstance(); 
+        System.out.println(instance2);
+
+        System.out.println(instance == instance2);//T
+    }
+}
+
+    //希望在程序運行過程中，只能創建一個 Cat 對象
+
+
+    //使用單例模式
+class Cat {
+    private String name;
+    public static int n1 = 999;
+    private static Cat cat ; //默認是 null
+
+
+    //步驟
+    //1.仍然構造器私有化
+    //2.定義一個 static 靜態屬性對象
+    //3.提供一個 public 的 static 方法，可以返回一個 Cat 對象
+    //4.懶漢式，只有當用戶使用 getInstance 時，才返回 cat 對象, 後面再次調用時，會返回上次創建的 cat 對象
+    //	從而保證了單例
+    private Cat(String name) {
+    	System.out.println("構造器調用..."); 
+        this.name = name;
+    }
+    public static Cat getInstance() {
+    	if(cat == null) {//如果還沒有創建 cat 對象
+    		cat = new Cat("小可愛");
+    	}
+    return cat;
+    }
+
+    @Override
+    public String toString() {
+    	return "Cat{" +
+    		"name='" + name + '\'' + '}';
+    }
+}
+```
+
+- 饿汉式VS 懒汉式
+
+  ![image-20210920192142541](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920192142541.png)
+
+
+
+### 5. final 关键字
+
+- 基本介绍
+
+  ![image-20210920192804595](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920192804595.png)
+
+- final 使用注意事项和细节讨论
+
+  ![image-20210920194310973](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920194310973.png)
+
+  ![image-20210920195251614](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920195251614.png)
+
+
+
+### 6. 抽象类
+
+- 抽象类快速入门
+
+  即： 父类方法不确定性的问题
+  考虑将该方法设计为抽象(abstract)方法
+  所谓抽象方法就是没有实现的方法
+  所谓没有实现就是指，没有方法体
+  当一个类中存在抽象方法时，需要将该类声明为 abstract 类
+  一般来说，抽象类会被继承，有其子类来实现抽象方法.
+
+- 抽象类的介绍
+
+  ![image-20210920200824090](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920200824090.png)
+
+- 细节
+
+  ![image-20210920200926449](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920200926449.png)
+
+  ![image-20210920201210869](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920201210869.png)
+
+  <img src="E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920201822038.png" alt="image-20210920201822038" style="zoom:150%;" />
+
+- 抽象类最佳实践-模板设计模式
+
+  - 基本介绍
+
+    ![image-20210920210600676](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920210600676.png)
+
+  - 模板设计模式能解决的问题
+
+    ![image-20210920210629061](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920210629061.png)
+
+### 7. 接口
+
+- 基本介绍
+
+  ![image-20210920212834130](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920212834130.png)
+
+
+
+
+
+
+
+### 8. 内部类
+
+
+
+
+
