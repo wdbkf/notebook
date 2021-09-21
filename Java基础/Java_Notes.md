@@ -2000,7 +2000,7 @@ Java 创建对象的流程简单分析  （重要！！！）
     
 
   - 属性没有重写之说！属性的值看编译类型；（重要）
-  - instanceOf 比较操作符，用于判断对象的运行类型是否为 XX 类型或XX 类型的子类型；（重要，经常和向下转型一起用）
+  - instanceOf 比较操作符，用于判断对象的运行类型是否为 XX 类型或XX 类型的子类型；（重要，==经常和向下转型一起用==）
 
 - java 的动态绑定机制   (非常重要！！)
 
@@ -2407,15 +2407,314 @@ class Cat {
 
   ![image-20210920212834130](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920212834130.png)
 
+- 注意事项和细节
+
+  ![image-20210921150912373](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921150912373.png)
+
+  说明：第3）点可以快捷键  alt+enter
+
+  ![image-20210921152450589](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921152450589.png)
+
+  - 练习
+
+    ![image-20210921154050916](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921154050916.png)
 
 
 
+- 实现接口 vs 继承类
 
+  ==小结==:	当子类继承了父类，就自动的拥有父类的功能，
+  如果子类需要扩展功能，可以通过实现接口的方式扩展.
+  可以理解 实现接口 是 对 java  单继承机制的一种补充.
 
+  ![image-20210921154316087](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921154316087.png)
+
+- 接口的多态特性
+
+  ![image-20210921155043731](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921155043731.png)
+
+  ```java
+  package com.hspedu.interface_;
+  /**
+  * 演示多态传递现象
+  */
+  public class InterfacePolyPass {
+      public static void main(String[] args) {
+      //接口类型的变量可以指向，实现了该接口的类的对象实例
+      IG ig = new Teacher();
+      //如果 IG 继承了 IH 接口，而 Teacher 类实现了 IG 接口
+      //那么，实际上就相当于 Teacher 类也实现了 IH 接口.
+      //这就是所谓的 接口多态传递现象. 
+      IH ih = new Teacher();
+      }
+  }
+  
+  
+  interface IH {
+  	void hi();
+  }
+  interface IG extends IH{ } 
+  class Teacher implements IG {
+  	@Override 
+      public void hi() {
+  	}
+  }
+  ```
+
+  
 
 ### 8. 内部类
 
+- 基本介绍
 
+  ![image-20210921162015111](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921162015111.png)
 
+- 基本语法
 
+  ![image-20210921162034387](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921162034387.png)
+
+- 内部类的分类
+
+  - 如果定义类在局部位置(方法中/代码块) :(1) 局部内部类(通常再方法中) (2) 匿名内部类
+
+  - 定义在成员位置 (1) 成员内部类 (2) 静态内部类
+
+    ![image-20210921162320260](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921162320260.png)
+
+- 局部内部类的使用
+
+  ![image-20210921163456233](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921163456233.png)
+
+  ![image-20210921164059923](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921164059923.png)
+
+  
+
+- 匿名内部类的使用(重要!!!!!!!)
+
+  ![image-20210921165304696](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921165304696.png)
+
+  ```java
+  package com.hspedu.innerclass;
+  
+  /**
+  * 演示匿名内部类的使用
+  */
+  public class AnonymousInnerClass {
+  	public static void main(String[] args) { 
+          Outer04 outer04 = new Outer04(); 
+          outer04.method();
+  	}
+  }
+  
+  class Outer04 { //外部类
+      private int n1 = 10;//属性
+      public void method() {//方法
+          
+          //基于接口的匿名内部类
+          
+          //老韩解读
+          //1.需求： 想使用 IA 接口,并创建对象
+          //2.传统方式，是写一个类，实现该接口，并创建对象
+          //3.老韩需求是 Tiger/Dog  类只是使用一次，后面再不使用
+          //4. 可以使用匿名内部类来简化开发
+          //5. tiger 的编译类型 ? IA
+          //6. tiger 的运行类型 ? 就是匿名内部类	Outer04$1
+          /*
+          我们看底层 会分配 类名 Outer04$1
+          class Outer04$1 implements IA {
+              @Override
+              public void cry() {
+                  System.out.println("老虎叫唤...");
+              }
+          }
+          */
+          //7. jdk 底层在创建匿名内部类 Outer04$1,立即马上就创建了 Outer04$1 实例，并且把地址
+          //	返回给 tiger
+          //8. 匿名内部类使用一次，就不能再使用
+          IA tiger = new IA() { //如果用原始方法就要去建一个类去实现该接口，然后调用方法这种 硬编码 的方式；如果用匿名内部类就更加简洁灵活！！！
+              @Override
+              public void cry() {
+              	System.out.println("老虎叫唤...");
+              }
+          };
+          
+          System.out.println("tiger 的运行类型=" + tiger.getClass()); 
+          tiger.cry();
+          tiger.cry();
+          tiger.cry();
+  
+          //	IA tiger = new Tiger();
+          //	tiger.cry();
+  
+  
+      //演示基于类的匿名内部类
+      //分析
+      //1. father 编译类型 Father
+      //2. father 运行类型 Outer04$2
+      //3. 底层会创建匿名内部类
+      /*
+      class Outer04$2 extends Father{//所以本质上看，可以用继承思想与多态的向上转型和动态绑定理解！
+          @Override
+          public void test() {
+         		System.out.println("匿名内部类重写了 test 方法");
+          }
+      }
+      */
+      //4. 同时也直接返回了 匿名内部类 Outer04$2 的对象
+      //5. 注意("jack") 参数列表会传递给 构造器
+  	Father father = new Father("jack"){
+          @Override
+          public void test() {
+              System.out.println("匿名内部类重写了 test 方法");
+          }
+      };
+          
+      System.out.println("father 对象的运行类型=" + father.getClass());//Outer04$2 
+      father.test();
+  
+      //基于抽象类的匿名内部类
+      Animal animal = new Animal(){
+          @Override
+          void eat() {
+          	System.out.println("小狗吃骨头...");
+          }
+      };
+      animal.eat();
+          
+      }
+  }
+  
+  
+  interface IA {//接口
+      public void cry();
+  }
+  //class Tiger implements IA {
+  //
+  //	@Override
+  //	public void cry() {
+  //	System.out.println("老虎叫唤...");
+  //	}
+  //}
+  //class Dog implements	IA{
+  //	@Override
+  //	public void cry() {
+  //	System.out.println("小狗汪汪...");
+  //	}
+  //}
+  
+  class Father {//类
+      public Father(String name) {//构造器
+      	System.out.println("接收到 name=" + name);
+      }
+      public void test() {//方法
+      }
+  }
+  
+  abstract class Animal { //抽象类
+      abstract void eat();
+  }
+  
+  ```
+
+- 匿名内部类细节
+
+  ![image-20210921232020093](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921232020093.png)
+
+  ![image-20210921232827539](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921232827539.png)
+
+  ![image-20210921232934926](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210921232934926.png)
+
+- 练习
+
+  ```java
+  /*
+  1.有一个铃声接口 Bell，里面有个 ring 方法。(右图)
+  2.有一个手机类 Cellphone，具有闹钟功能 alarmClock，参数是 Bell 类型(右图)
+  3.测试手机类的闹钟功能，通过匿名内部类(对象)作为参数，打印：懒猪起床了
+  4.再传入另一个匿名内部类(对象)，打印：小伙伴上课了
+  */
+  
+  //如果用老办法，就要建一个类去实现Bell接口，再重写方法，创对象，再cellPhone.alarmClock(该对象)；动态绑定；
+  //而使用匿名内部类 直接可以作为一个对象 alarmClock(匿名内部类), 简洁灵活，太香了！
+  
+  package com.yt.innerclass;
+  
+  public class InnerClassExercise {
+      public static void main(String[] args){
+          CellPhone cellPhone = new CellPhone();
+          cellPhone.alarmClock(new Bell() { //匿名内部类是个对象，
+              // 传递的是实现了 Bell 接口的匿名内部类 InnerClassExercise$1
+              @Override
+              public void ring() {
+                  System.out.println("懒猪起床了");
+              }
+          });
+          cellPhone.alarmClock(new Bell() {
+              @Override
+              public void ring() {
+                  System.out.println("小伙伴上课了");
+              }
+          });
+      }
+  }
+  
+  interface Bell{
+      void ring();
+  }
+  
+  class CellPhone{
+      public void alarmClock(Bell bell){
+          bell.ring();
+      }
+  }
+  ```
+
+  
+
+- 成员内部类的使用
+
+  ![image-20210922001400044](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922001400044.png)
+
+  ![image-20210922001455135](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922001455135.png)
+
+  ```java
+  //外部其他类，使用成员内部类的2种方式
+  // 第一种方式
+  // outer08.new Inner08(); 相当于把 new Inner08()当做是 outer08 成员
+  // 这就是一个语法，不要特别的纠结. 
+  Outer08 outer08 = new Outer08(); 
+  Outer08.Inner08 inner08 = outer08.new Inner08(); inner08.say();
+  // 第二方式 在外部类中，编写一个方法getInner08Instance()，可以返回 Inner08 对象
+  Outer08.Inner08 inner08Instance = outer08.getInner08Instance(); inner08Instance.say();
+  ```
+
+  
+
+  ![image-20210922001507391](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922001507391.png)
+
+- 静态内部类的使用
+
+  ![image-20210922003556789](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922003556789.png)
+
+  ![image-20210922003629470](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922003629470.png)
+
+  ![image-20210922003659557](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922003659557.png)
+
+  ```java
+  //外部其他类 使用静态内部类
+  //方式 1
+  //因为静态内部类，是可以通过类名直接访问(前提是满足访问权限) 
+  Outer10.Inner10 inner10 = new Outer10.Inner10();
+  inner10.say();
+  //方式 2
+  //编写一个方法getInner10()，可以返回静态内部类的对象实例.
+  Outer10 outer10 = new Outer10();
+  Outer10.Inner10 inner101 = outer10.getInner10(); System.out.println("============"); inner101.say();
+  //编写一个静态方法getInner10_()，可以返回静态内部类的对象实例.
+  Outer10.Inner10 inner10_ = Outer10.getInner10_(); System.out.println("************"); inner10_.say();
+  ```
+
+  
+
+  ![image-20210922003706240](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922003706240.png)
 
