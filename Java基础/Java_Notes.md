@@ -2365,8 +2365,8 @@ class Cat {
   ![image-20210920194310973](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920194310973.png)
 
   ![image-20210920195251614](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210920195251614.png)
-
-
+  
+  说明：第七点很细节！！ 注意！！！
 
 ### 6. 抽象类
 
@@ -2714,7 +2714,355 @@ class Cat {
   Outer10.Inner10 inner10_ = Outer10.getInner10_(); System.out.println("************"); inner10_.say();
   ```
 
+  ![image-20210922003706240](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922003706240.png)
+
+
+
+## 第十章 枚举与注解
+
+### 1.枚举介绍
+
+- 枚举对应英文(enumeration, 简写 enum)
+- 枚举是一组常量的集合。
+- 可以这里理解：枚举属于一种特殊的类，里面只包含一组有限的特定的对象。
+- 枚举的二种实现方式
+  1. 自定义类实现枚举
+  2. 使用 enum 关键字实现枚举
+
+### 2. 自定义类实现枚举
+
+![image-20210922111728040](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922111728040.png)
+
+- 自定义类实现枚举-小结
+  - 构造器私有化
+  - 本类内部创建一组对象[四个 春夏秋冬]
+  - 对外暴露对象（通过为对象添加 public final static 修饰符）
+  - 可以提供 get 方法，但是不要提供 set
+
+### 3. enum关键字实现枚举
+
+- 使用 enum 来实现枚举类
+  1. 使用关键字 enum 替代 class
+  2. public static final Season SPRING = new Season("春天", "温暖")   直接使用 SPRING("春天", "温暖")代替    解读： 常量名(实参列表)
+  3. 如果有多个常量(对象)， 使用  ,  号间隔即可
+  4. 如果使用 enum  来实现枚举，要求将定义常量对象，写在前面
+  5. 如果我们使用的是无参构造器，创建常量对象，则可以省略 ()
+
+- enum 关键字实现枚举注意事项
+  1.  当我们使用enum 关键字开发一个枚举类时，默认会继承 Enum 类, 而且是一个final 类[如何证明],老师使用javap(反编译)  工具来演示.
+  2. 传统的 public static final Season2 SPRING = new Season2("春天", "温暖"); 简化成 SPRING("春天", "温暖")， 这里必须知道，它调用的是哪个构造器.
+  3. 如果使用无参构造器 创建 枚举对象，则实参列表和小括号都可以省略.
+  4. 当有多个枚举对象时，使用 , 间隔，最后有一个分号结尾.
+  5. 枚举对象必须放在枚举类的行首.
+  6. 使用 enum 关键字后，就不能再继承其它类了，因为 enum 会隐式继承 Enum，而 Java 是单继承机制。 
+  7. 枚举类和普通类一样，可以实现接口，如下形式。
+     enum 类名 implements  接口 1，接口 2{}
+
+- 练习 （注意返回的对象是静态的  所示是true）
+
+  ![image-20210922134916059](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922134916059.png)
+
+- enum 常用方法说明
+
+  说明：使用关键字 enum 时，会隐式继承 Enum 类,  这样我们就可以使用 Enum 类相关的方法。[看下源码定义.]
+
+  public abstract class Enum<E extends Enum<E>> implements 				Comparable<E>, Serializable {
+  }
+
+  ![image-20210922140902676](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922140902676.png)
+
+  1. toString: Enum 类已经重写过了，返回的是当前对象名,子类可以重写该方法，用于返回对象的属性信息
+  2. name：返回当前对象名（常量名），子类中不能重写
+  3. ordinal：返回当前对象的位置号，默认从 0 开始
+  4. values：返回当前枚举类中所有的常量(对象)
+  5. valueOf：将字符串转换成枚举对象，要求字符串必须为已有的常量名，否则报异常！
+  6. compareTo：比较两个枚举常量，比较的就是编号！
+
+- 练习
+
+  ```java
+  package com.yt.enum_;
+  
+  /**
+   * @author Yt
+   * @version 1.0
+   */
+  public class EnumExercise {
+      public static void main(String[] args){
+          Week[] weeks = Week.values();
+          for(Week w:weeks){  //可以用weeks.for 直接写出for循环！！
+              System.out.println(w.getName());
+          }
+  
+      }
+  }
+  
+  enum Week{
+  
+      MONDAY("星期一"),TUESDAY("星期二"), WEDNESDAY("星期三"), THURSDAY("星期四"), FRIDAY("星期五"), SATURDAY("星期六"), SUNDAY("星期日");
+      private String name;
+  
+      Week(String name) {
+          this.name = name;
+      }
+  
+      public String getName() {
+          return name;
+      }
+  
+      @Override
+      public String toString() {
+          return "Week{" +
+                  "name='" + name + '\'' +
+                  '}';
+      }
+  }
+  ```
+
   
 
-  ![image-20210922003706240](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922003706240.png)
+### 4. JDK内置的基本注解类型
+
+- 注解的理解
+  1. 注解(Annotation)也被称为元数据(Metadata)，用于修饰解释 包、类、方法、属性、构造器、局部变量等数据信息。
+  2. 和注释一样，注解不影响程序逻辑，但注解可以被编译或运行，相当于嵌入在代码中的补充信息。
+  3. 在 JavaSE 中，注解的使用目的比较简单，例如标记过时的功能，忽略警告等。在 JavaEE 中注解占据了更重要的角色，例如用来配置应用程序的任何切面，代替 java EE 旧版中所遗留的繁冗代码和 XML 配置等
+
+- 基本的 Annotation 介绍
+
+  使用 Annotation 时要在其前面增加 @ 符号, 并把该 Annotation 当成一个修饰符使用。用于修饰它支持的程序元素
+  三个基本的 Annotation:
+
+  1) @Override: 限定某个方法，是重写父类方法,  该注解只能用于方法（如果你写了@Override 注解，编译器就会去检查该方法是否真的重写了父类的方法，如果的确重写了，则编译通过，如果没有构成重写，则编译错误）
+
+     看看 @Override 的定义
+     //	解读： 如果发现 @interface 表示一个 注解类
+     /*
+     @Target(ElementType.METHOD) @Retention(RetentionPolicy.SOURCE) 
+
+     public @interface Override {
+     }
+     */
+
+     ![image-20210922145412158](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922145412158.png)
+
+  2) @Deprecated: 用于表示某个程序元素(类,  方法等)已过时
+
+     1. @Deprecated  修饰某个元素,  表示该元素已经过时
+
+     2. 即不在推荐使用，但是仍然可以使用
+
+     3. 查看 @Deprecated  注解类的源码
+
+        /* @Documented
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})
+        public @interface Deprecated {
+        }
+        */ 
+
+     4. 可以修饰方法，类，字段,  包,  参数	等等
+
+     5. @Deprecated  可以做版本升级过渡使用
+
+  3) @SuppressWarnings: 抑制编译器警告
+
+     1. 当我们不希望看到这些警告的时候，可以使用 SuppressWarnings 注解来抑制警告信息
+
+     2. 在{" "} 中，可以写入你希望抑制(不显示)警告信息
+
+     3. 可以指定的警告类型有
+        //	all，抑制所有警告
+        //	boxing，抑制与封装/拆装作业相关的警告
+        //	//cast，抑制与强制转型作业相关的警告
+        //	//dep-ann，抑制与淘汰注释相关的警告
+        //	//deprecation，抑制与淘汰的相关警告
+        //	//fallthrough，抑制与 switch 陈述式中遗漏 break 相关的警告
+        //	//finally，抑制与未传回 finally 区块相关的警告
+        //	//hiding，抑制与隐藏变数的区域变数相关的警告
+        //	//incomplete-switch，抑制与 switch 陈述式(enum case)中遗漏项目相关的警告
+        //	//javadoc，抑制与 javadoc 相关的警告
+
+        //	//nls，抑制与非 nls 字串文字相关的警告
+        //	//null，抑制与空值分析相关的警告
+        //	//rawtypes，抑制与使用 raw 类型相关的警告
+        //	//resource，抑制与使用 Closeable 类型的资源相关的警告
+        //	//restriction，抑制与使用不建议或禁止参照相关的警告
+        //	//serial，抑制与可序列化的类别遗漏 serialVersionUID 栏位相关的警告
+        //	//static-access，抑制与静态存取不正确相关的警告
+        //	//static-method，抑制与可能宣告为 static 的方法相关的警告
+        //	//super，抑制与置换方法相关但不含 super 呼叫的警告
+        //	//synthetic-access，抑制与内部类别的存取未最佳化相关的警告
+        //	//sync-override，抑制因为置换同步方法而遗漏同步化的警告
+        //	//unchecked，抑制与未检查的作业相关的警告
+        //	//unqualified-field-access，抑制与栏位存取不合格相关的警告
+        //	//unused，抑制与未用的程式码及停用的程式码相关的警告
+
+     4. 关于 SuppressWarnings 作用范围是和你放置的位置相关，比如 @SuppressWarnings 放置在 main 方法，那么抑制警告的范围就是 main，通常我们可以放置具体的语句, 方法, 类.
+
+     5. 看看 @SuppressWarnings  源码
+        (1) 放置的位置就是 TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE
+        (2) 该注解类有数组 String[] values() ，设置一个数组比如 {"rawtypes", "unchecked", "unused"}
+        /*
+        @Target({TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE})
+                 @Retention(RetentionPolicy.SOURCE)
+
+        ​          public @interface SuppressWarnings {
+
+        ​				String[] value();
+
+        ​	  	}
+        */
+
+        ![image-20210922151032533](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922151032533.png)
+
+### 5. 元注解进行注释
+
+- 元注解的基本介绍
+
+  JDK 的元 Annotation  用于修饰其他 Annotation
+  元注解： 本身作用不大，讲这个原因希望同学们，看源码时，可以知道他是干什么
+
+- 元注解的种类 (使用不多，了解, 不用深入研究)
+
+  1) Retention	//指定注解的作用范围，三种 SOURCE,CLASS,RUNTIME
+
+     - 说明
+       只能用于修饰一个 Annotation 定义, 用于指定该 Annotation 可以保留多长时间, @Rentention 包含一个 RetentionPolicy
+       类型的成员变量, 使用 @Rentention  时必须为该 value 成员变量指定值:
+       @Retention 的三种值
+
+       1) RetentionPolicy.SOURCE: 编译器使用后，直接丢弃这种策略的注释
+
+       2) RetentionPolicy.CLASS: 编译器将把注解记录在 class 文件中. 当运行 Java 程序时, JVM 不会保留注解。 这是默认值
+
+       3) RetentionPolicy.RUNTIME:编译器将把注解记录在 class 文件中. 当运行 Java 程序时, JVM  会保留注解.  程序可以通过反射获取该注解
+
+          ![image-20210922151924636](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922151924636.png)
+
+  2) Target // 指定注解可以在哪些地方使用
+
+     ![image-20210922152519049](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922152519049.png)
+
+  3) Documented //指定该注解是否会在 javadoc 体现
+
+     ![image-20210922152537115](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922152537115.png)
+
+  4) Inherited //子类会继承父类注解
+
+
+
+## 第十一章 异常
+
+### 1. 异常的概念
+
+![image-20210922190502852](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922190502852.png)
+
+### 2. 异常体系图
+
+- 异常体系图
+
+  ![image-20210922192224896](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922192224896.png)
+
+  ![image-20210922192834883](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922192834883.png)
+
+### 3. 常见的异常
+
+- NullPointerException 空指针异常
+- ArithmeticException 数学运算异常
+- ArrayIndexOutOfBoundsException 数组下标越界异常
+- ClassCastException 类型转换异常
+- NumberFormatException 数字格式不正确异常[]
+
+### 4. 异常处理概念
+
+- 异常处理的方式
+
+  ![image-20210922195006657](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922195006657.png)
+
+  ![image-20210922195032750](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922195032750.png)
+
+  ![image-20210922195224706](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922195224706.png)
+
+### 5. 异常处理分类
+
+- try-catch 方式（ctrl + atl + t）处理异常说明
+
+  ![image-20210922200038132](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922200038132.png)
+
+- try-catch 方式处理异常-注意事项
+
+  ![image-20210922200116670](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922200116670.png)
+
+  ![image-20210922200809866](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922200809866.png)
+
+  ![image-20210922201640222](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922201640222.png)
+
+-  练习（注意！！）
+
+  ![image-20210922202644386](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922202644386.png)
+
+
+
+- throws 异常处理
+
+  - 基本介绍
+
+    ![image-20210922203659425](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922203659425.png)
+
+  - 注意事项和使用细节
+
+    ![image-20210922203748148](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922203748148.png)
+
+### 6. 自定义异常
+
+- 基本概念
+
+  ![image-20210922205503482](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922205503482.png)
+
+- 自定义异常的步骤
+
+  ![image-20210922205929083](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922205929083.png)
+
+  1. 一般情况下，我们自定义异常是继承 RuntimeException
+  2. 即把自定义异常做成 运行时异常，好处是，我们可以使用默认的处理机制，即比较方便。
+
+### 7. throw和throws的对比
+
+![image-20210922210154790](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922210154790.png)
+
+
+
+## 第十二章 常用类
+
+### 1. 包装类（Wrapper）
+
+- 针对八种基本数据类型相应的引用类型—包装类
+  有了类的特点，就可以调用类中的方法。
+
+  ![image-20210922214141377](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922214141377.png)
+
+  ![image-20210922214351014](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922214351014.png)
+
+  ![](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922214530483.png)
+
+  ![image-20210922214545829](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210922214545829.png)
+
+  
+
+### 2. String类
+
+
+
+### 3. StringBuffer和StringBuilder类
+
+### 4. Math类
+
+### 5. Date日期类、Calender日历类以及新的日期
+
+### 6. System类
+
+### 7. Arrays类
+
+### 8. BigInteger类和BIgDecimal类
 
