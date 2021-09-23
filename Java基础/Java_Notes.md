@@ -3050,19 +3050,781 @@ class Cat {
 
   
 
-### 2. String类
+- 包装类和基本数据的转换 (装箱和拆箱)  (面试)
+
+  ```java
+  package com.hspedu.wrapper;
+  
+  /**
+  *@author 韩顺平
+  *@version 1.0
+  */
+  public class Integer01 {
+      public static void main(String[] args) {
+          //演示 int <--> Integer 的装箱和拆箱
+          //jdk5 前是手动装箱和拆箱
+          //手动装箱 int->Integer 
+          int n1 = 100;
+          Integer integer = new Integer(n1); 
+          Integer integer1 = Integer.valueOf(n1);
+  
+          //手动拆箱
+          //Integer -> int
+          int i = integer.intValue();
+  
+  
+          //jdk5 后，就可以自动装箱和自动拆箱
+          int n2 = 200;
+          //自动装箱 int->Integer
+          Integer integer2 = n2; //底层使用的是 Integer.valueOf(n2)
+          //自动拆箱 Integer->int
+          int n3 = integer2; //底层仍然使用的是 intValue()方法
+      }
+  }
+  ```
+
+  
+
+- 练习 （面试）
+
+  ![image-20210923095831278](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923095831278.png)
+
+  解释：第二天注意，三元运算符是一个整体，所以在运算时会提升精度，统一为Double，所以输出1.0！！
+
+- 包装类型和String 类型的相互转换
+
+  ```java
+  public class WrapperVSString {
+  public static void main(String[] args) {
+      //包装类(Integer)->String 
+      Integer i = 100;//自动装箱
+      //方式 1
+      String str1 = i + "";
+      //方式 2
+      String str2 = i.toString();
+      //方式 3
+      String str3 = String.valueOf(i);
+  
+  
+      //String -> 包装类(Integer) 
+      String str4 = "12345";
+      Integer i2 = Integer.parseInt(str4);//使用到自动装箱
+      Integer i3 = new Integer(str4);//构造器
+  
+      System.out.println("ok~~");
+      }
+  }
+  ```
+
+  
+
+- Integer 类和Character 类的常用方法
+
+  ```java
+  public class WrapperMethod {
+      public static void main(String[] args) { 
+          System.out.println(Integer.MIN_VALUE); //返回最小值
+          System.out.println(Integer.MAX_VALUE);//返回最大值
+  
+  
+          System.out.println(Character.isDigit('a'));//判断是不是数字
+          System.out.println(Character.isLetter('a'));//判断是不是字母
+          System.out.println(Character.isUpperCase('a'));//判断是不是大写
+          System.out.println(Character.isLowerCase('a'));//判断是不是小写
+  
+  
+          System.out.println(Character.isWhitespace('a'));//判断是不是空格
+          System.out.println(Character.toUpperCase('a'));//转成大写
+          System.out.println(Character.toLowerCase('A'));//转成小写
+  	}
+  }
+  ```
+
+  
+
+- Integer 类面试题
+
+  ```java
+  public class WrapperExercise02 {
+      public static void main(String[] args) { 
+          Integer i = new Integer(1); 
+          Integer j = new Integer(1);
+          System.out.println(i == j);	//False
+  
+          //所以，这里主要是看范围 -128 ~ 127  就是直接返回
+          /*
+          老韩解读
+          //1. 如果 i 在 IntegerCache.low(-128)~IntegerCache.high(127),就直接从数组cache[i + (-IntegerCache.low)]返回,这个数组存放着-128~127的数。
+          //2. 如果不在 -128~127,就直接 new Integer(i) 
+          public static Integer valueOf(int i) {
+          if (i >= IntegerCache.low && i <= IntegerCache.high) 
+              return IntegerCache.cache[i + (-IntegerCache.low)];
+          return new Integer(i);
+          }
+          */
+          Integer m = 1; //底层 Integer.valueOf(1); -> 阅读源码
+          Integer n = 1;// 底 层 Integer.valueOf(1); 
+          System.out.println(m == n); //T
+  
+          //所以，这里主要是看范围 -128 ~ 127  就是直接返回
+          //，否则，就 new Integer(xx);
+          Integer x = 128;//底层 Integer.valueOf(128); 
+          Integer y = 128;//底层 Integer.valueOf(128); 
+          System.out.println(x == y);//False
+     
+      
+          Integer i11=127; 
+          int i12=127;
+          //只要有基本数据类型，判断的是值是否相同   
+          System.out.println(i11==i12); //T
+          //只要有基本数据类型，判断的是值是否相同 
+          Integer i13=128; 
+          int i14=128;
+          System.out.println(i13==i14);//T
+  	}
+  }
+  ```
+
+  
+
+### 2. String类 （面试）
+
+- String 类的理解和创建对象
+
+  ![image-20210923110933700](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923110933700.png)
+
+  ![image-20210923110950881](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923110950881.png)
+
+  ```java
+  public class String01 {
+      public static void main(String[] args) {
+          //1.String 对象用于保存字符串，也就是一组字符序列
+          //2. "jack" 字符串常量,  双引号括起的字符序列
+          //3. 字符串的字符使用 Unicode 字符编码，一个字符(不区分字母还是汉字)占两个字节
+          //4. String 类有很多构造器，构造器的重载
+          //	常用的有 String	s1 = new String(); 
+          //String	s2 = new String(String original);
+          //String	s3 = new String(char[] a);
+          //String	s4 = new String(char[] a,int startIndex,int count)
+          //String    s5 = new String(byte[] b)
+          //5. String  类实现了接口 Serializable【String  可以串行化:可以在网络传输】
+          //	          实现了接口 Comparable [String 对象可以比较大小]
+          //6. String  是 final  类，不能被其他的类继承
+          
+          //7. String  有属性 private final char value[];  用于存放字符串内容     
+          //8. 一定要注意：value 是一个 final 类型， 不可以修改(需要功力)：即 value 不能指向
+          //	新的地址，但是单个字符内容是可以变化
+  
+          String name = "jack"; 
+          name = "tom";
+          
+          final char[] value = {'a','b','c'};
+          char[] v2 = {'t','o','m'};
+          value[0] = 'H';
+          //value = v2;  不可以修改 value 地址
+      }
+  }
+  ```
+
+  
+
+- 创建String 对象的两种方式
+
+  ![image-20210923124118704](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923124118704.png)
+
+  - 两种创建String 对象的区别
+
+    ![image-20210923124244779](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923124244779.png)
+
+    ![image-20210923124356190](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923124356190.png)
+
+  - 练习
+
+    ![image-20210923130340397](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923130340397.png)
+
+    ![image-20210923132403229](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923132403229.png)
 
 
 
-### 3. StringBuffer和StringBuilder类
+- 字符串的特性
+
+  ![image-20210923134434106](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923134434106.png)
+
+  ![image-20210923134456893](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923134456893.png)
+
+  - 面试题
+
+    1.![image-20210923134514105](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923134514105.png)
+
+    2.![image-20210923134529811](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923134529811.png)
+
+    <img src="E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923134728086.png" alt="image-20210923134728086" style="zoom: 50%;" />
+
+    3.![img](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\wps5.png)
+
+
+
+- String 类的常见方法
+
+  - 说明
+
+    ![image-20210923143238811](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923143238811.png)
+
+  - String 类的常见方法一览
+
+    ![image-20210923143250970](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923143250970.png)
+
+    ![image-20210923150125536](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923150125536.png)
+
+    ```java
+    // 7.compareTo 比较两个字符串的大小，如果前者大，
+    // 则返回正数，后者大，则返回负数，如果相等，返回 0
+    // 老韩解读
+    // (1) 如果长度相同，并且每个字符也相同，就返回 0
+    // (2) 如果长度相同或者不相同，但是在进行比较时，可以区分大小
+    //	就返回 if (c1 != c2) {
+    //	return c1 - c2;
+    //	}
+    // (3) 如果前面的部分都相同，就返回 str1.len - str2.len 
+    String a = "jcck";// len = 4
+    String b = "jack";// len = 4
+    System.out.println(a.compareTo(b)); //  返回值是 'c' - 'a' = 2 的值
+    
+    // 8.format 格式字符串
+    /* 占位符有:
+    * %s  字符串 %c 字符 %d 整型 %.2f 浮点型
+    *
+    */
+    String name = "john"; 
+    int age = 10;
+    double score = 56.857;
+    char gender = '男';
+    //将所有的信息都拼接在一个字符串. 
+    String info = "我的姓名是" + name + "年龄是" + age + ",成绩是" + score + "性别是" + gender + "。希望大家喜欢我！";
+    System.out.println(info);
+    
+    //老韩解读
+    //1. %s , %d , %.2f %c 称为占位符
+    //2. 这些占位符由后面变量来替换
+    //3. %s  表示后面由 字符串来替换
+    //4. %d 是整数来替换
+    //5. %.2f 表示使用小数来替换，替换后，只会保留小数点两位,  并且进行四舍五入的处理
+    //6. %c 使用 char 类型来替换
+    String formatStr = "我的姓名是%s 年龄是%d，成绩是%.2f 性别是%c.希望大家喜欢我！";
+    String info2 = String.format(formatStr, name, age, score, gender);
+    System.out.println("info2=" + info2);
+    ```
+
+    
+
+### 3. StringBuffer和StringBuilder类 (面试)
+
+- 基本介绍
+
+  ![image-20210923151459717](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923151459717.png)
+
+  ```java
+  public class StringBuffer01 {
+      public static void main(String[] args) {
+      //老韩解读
+      //1. StringBuffer 的直接父类 是 AbstractStringBuilder
+      //2. StringBuffer 实现了 Serializable,  即 StringBuffer 的对象可以串行化
+      //3. 在父类中	AbstractStringBuilder 有属性 char[] value, 不是 final
+      //	该 value 数组存放 字符串内容，存放在 堆中的!!! 
+      //4. StringBuffer 是一个 final 类，不能被继承
+      //5. 因为 StringBuffer 字符内容是存在 char[] value, 所以在变化(增加/删除)
+      //	不用每次都更换地址(即不是每次创建新对象)， 所以效率高于 String
+      StringBuffer stringBuffer = new StringBuffer("hello");	
+      }
+  }
+  ```
+
+- String VS StringBuffer
+
+  ![image-20210923151851429](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923151851429.png)
+
+- StringBuffer的构造器
+
+  ![image-20210923153018339](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923153018339.png)
+
+- String 和 StringBuffer 相互转换
+
+  ![image-20210923153149791](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923153149791.png)
+
+- StringBuffer 类常见方法
+
+  ![image-20210923154145444](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923154145444.png)
+
+  
+
+- 练习
+
+  ![image-20210923160505691](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923160505691.png)
+
+
+
+- StringBuilder 类
+
+  - 基本介绍
+
+    ![image-20210923163036394](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923163036394.png)
+
+    ```java
+    public class StringBuilder01 {
+    	public static void main(String[] args) {
+            //老韩解读
+            //1. StringBuilder 继承 AbstractStringBuilder 类
+            //2. 实现了 Serializable ,说明 StringBuilder 对象是可以串行化(对象可以网络传输,可以保存到文件)
+            //3. StringBuilder 是 final 类,  不能被继承
+            //4. StringBuilder 对象字符序列仍然是存放在其父类 AbstractStringBuilder 的 char[] value;
+            //	因此，字符序列是堆中
+            //5. StringBuilder 的方法，没有做互斥的处理,即没有 synchronized 关键字,因此在单线程的情况下使用
+            //	StringBuilder
+            StringBuilder stringBuilder = new StringBuilder();
+        }
+    }
+    ```
+
+    
+
+- String、StringBuffer 和 StringBuilder 的比较
+
+  ![image-20210923164346885](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923164346885.png)
+
+- String、StringBuffer 和 StringBuilder 的选择
+
+  ![image-20210923164435324](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923164435324.png)
 
 ### 4. Math类
 
+ 	Math 类包含用于执行基本数学运算的方法，如初等指数、对数、平方根和三角函数。
+
+![image-20210923170427391](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923170427391.png)
+
 ### 5. Date日期类、Calender日历类以及新的日期
+
+- 第一代日期类
+
+  ![image-20210923205218898](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923205218898.png)
+
+  ```java
+  package com.hspedu.date_;
+  
+  import java.text.ParseException; 
+  import java.text.SimpleDateFormat; 
+  import java.util.Date;
+  
+  public class Date01 {
+      public static void main(String[] args) throws ParseException {
+          //老韩解读
+          //1. 获取当前系统时间
+          //2. 这里的 Date 类是在 java.util 包
+          //3. 默认输出的日期格式是国外的方式, 因此通常需要对格式进行转换
+          Date d1 = new Date(); //获取当前系统时间
+          System.out.println("当前日期=" + d1);
+          
+          Date d2 = new Date(9234567); //通过指定毫秒数得到时间
+          System.out.println("d2=" + d2); //获取某个时间对应的毫秒数
+       
+          //老韩解读
+          //1. 创建 SimpleDateFormat 对象，可以指定相应的格式
+          //2. 这里的格式使用的字母是规定好，不能乱写
+  
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyy 年 MM 月 dd 日 hh:mm:ss E");
+          String format = sdf.format(d1); // format:将日期转换成指定格式的字符串
+          System.out.println("当前日期=" + format);
+  
+          //老韩解读
+          //1. 可以把一个格式化的 String  转成对应的 Date
+          //2. 得到 Date 仍然在输出时，还是按照国外的形式，如果希望指定格式输出，需要转换
+          //3. 在把 String -> Date ， 使用的 sdf 格式需要和你给的 String 的格式一样，否则会抛出 转换异常
+          String s = "1996 年 01 月 01 日 10:20:30  星期一"; 
+          Date parse = sdf.parse(s); 
+          System.out.println("parse=" + sdf.format(parse));
+  	}
+  }
+  ```
+
+- 第二代日期类
+
+  ![image-20210923210959503](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923210959503.png)
+
+  ```java
+  package com.hspedu.date_;
+  import java.util.Calendar;
+  
+  public class Calendar_ {
+      public static void main(String[] args) {
+          //老韩解读
+          //1. Calendar 是一个抽象类， 并且构造器是 private
+          //2. 可以通过 getInstance() 来获取实例
+          //3. 提供大量的 方法 和 字段 提供给程序员
+          //4. Calendar 没有提供对应的格式化的类，因此需要程序员自己组合来输出 (灵活)
+          //5. 如果我们需要按照 24 小时进制来获取时间， Calendar.HOUR ==改成=> Calendar.HOUR_OF_DAY 
+          Calendar c = Calendar.getInstance(); //创建日历类对象//比较简单，自由
+          System.out.println("c=" + c);
+          //获取日历对象的某个日历字段
+          System.out.println("年：" + c.get(Calendar.YEAR));
+          // 这里为什么要 + 1,  因为 Calendar 返回月时候，是按照 0  开始编号
+          System.out.println("月：" + (c.get(Calendar.MONTH) + 1));
+          System.out.println("日：" + c.get(Calendar.DAY_OF_MONTH));
+          System.out.println("小时：" + c.get(Calendar.HOUR));
+          System.out.println("分钟：" + c.get(Calendar.MINUTE));
+          System.out.println("秒：" + c.get(Calendar.SECOND));
+          //Calender 没有专门的格式化方法，所以需要程序员自己来组合显示
+          System.out.println(c.get(Calendar.YEAR)	+	"-"	+	(c.get(Calendar.MONTH)	+	1)	+	"-"	+ c.get(Calendar.DAY_OF_MONTH) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND) );
+  
+      }
+  }
+  ```
+  
+  
+
+- 第三代日期类
+
+  ![image-20210923212716736](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923212716736.png)
+
+  ![image-20210923212724968](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923212724968.png)
+
+  - DateTimeFormatter 格式日期类
+
+    ![image-20210923214451430](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923214451430.png)
+
+  ```java
+  package com.hspedu.date_;
+  
+  import java.time.Instant; 
+  import java.time.LocalDate;
+  import java.time.LocalDateTime; 
+  import java.time.LocalTime;
+  import java.time.format.DateTimeFormatter;
+  import java.util.ArrayList;
+  import java.util.Collection;
+  
+  public class LocalDate_ {
+      public static void main(String[] args) {
+          //第三代日期
+          //老韩解读
+          //1. 使用 now() 返回表示当前日期时间的 对象
+          LocalDateTime ldt = LocalDateTime.now(); 
+          //LocalDate.now();
+          //LocalTime.now(); 		
+          System.out.println(ldt);
+  
+          //2. 使用 DateTimeFormatter 对象来进行格式化
+          // 创建 DateTimeFormatter 对象
+          DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); 	
+          String format = dateTimeFormatter.format(ldt);
+          System.out.println("格式化的日期=" + format);
+  
+          System.out.println("年=" + ldt.getYear());
+          System.out.println("月=" + ldt.getMonth());
+          System.out.println("月=" + ldt.getMonthValue());
+          System.out.println("日=" + ldt.getDayOfMonth());
+          System.out.println("时=" + ldt.getHour());
+          System.out.println("分=" + ldt.getMinute());
+          System.out.println("秒=" + ldt.getSecond());
+  
+          LocalDate now = LocalDate.now(); //可以获取年月日
+          LocalTime now2 = LocalTime.now();//获取到时分秒
+  
+          //提供 plus  和 minus 方法可以对当前时间进行加或者减
+          //看看 890 天后，是什么时候 把 年月日-时分秒
+          LocalDateTime localDateTime = ldt.plusDays(890);
+          System.out.println("890 天后=" + dateTimeFormatter.format(localDateTime));
+  
+          //看看在 3456 分钟前是什么时候，把 年月日-时分秒输出
+          LocalDateTime localDateTime2 = ldt.minusMinutes(3456);
+          System.out.println("3456 分钟前 日期=" + dateTimeFormatter.format(localDateTime2));
+      }
+  } 
+  ```
+
+  
+
+- Instant 时间戳
+
+  ![image-20210923214546140](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923214546140.png)
+
+  ```java
+  package com.hspedu.date_;
+  
+  import java.time.Instant;
+  import java.util.Date;
+  
+  public class Instant_ {
+      public static void main(String[] args) {
+  
+          //1.通过 静态方法 now() 获取表示当前时间戳的对象
+          Instant now = Instant.now(); 
+          System.out.println(now);
+          //2. 通过 from  可以把 Instant 转成 Date
+          Date date = Date.from(now);
+          //3. 通过 date 的 toInstant() 可以把 date 转成 Instant 对象
+          Instant instant = date.toInstant();
+      }
+  }
+  ```
+
+  
+
+
 
 ### 6. System类
 
+- System 类常见方法和案例
+
+  ![image-20210923202338611](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923202338611.png)
+
+  ```java
+  (2)arraycopy
+  //1. 主要是搞清楚这五个参数的含义
+  //2.
+  //	源数组
+  //	* @param	src	the source array.
+  //	srcPos： 从源数组的哪个索引位置开始拷贝
+  //	* @param	srcPos	starting position in the source array.
+  //	dest :  目标数组，即把源数组的数据拷贝到哪个数组
+  //	* @param	dest	the destination array.
+  //	destPos: 把源数组的数据拷贝到 目标数组的哪个索引
+  //	* @param	destPos	starting position in the destination data.
+  //	length: 从源数组拷贝多少个数据到目标数组
+  //	* @param	length	the number of array elements to be copied.
+  ```
+
+  
+
 ### 7. Arrays类
 
+- Arrays 类常见方法应用案例
+
+  ![image-20210923182144590](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923182144590.png)
+
+  ![image-20210923182201843](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923182201843.png)
+
+  ```java
+  package com.hspedu.arrays_;
+  
+  import java.util.Arrays; 
+  import java.util.Comparator;
+  
+  public class ArraysMethod01 {
+      public static void main(String[] args) {
+  
+          Integer[] integers = {1, 20, 90};
+          //遍历数组
+          //	for(int i = 0; i < integers.length; i++) {
+          //		System.out.println(integers[i]);
+          //	}
+          
+          //(一)直接使用 Arrays.toString 方法，显示数组
+          
+          System.out.println(Arrays.toString(integers));
+  
+          
+          
+          //(二)演示 sort 方法的使用
+          
+          Integer arr[] = {1, -1, 7, 0, 89};
+          //进行排序
+          //老韩解读
+          //1. 可以直接使用冒泡排序 ,  也可以直接使用 Arrays 提供的 sort 方法排序
+          //2. 因为数组是引用类型，所以通过 sort 排序后，会直接影响到 实参 arr
+          //3. sort 重载的，也可以通过传入一个接口 Comparator 实现定制排序
+          //4. 调用 定制排序 时，传入两个参数 (1) 排序的数组 arr
+          //	(2)  实现了 Comparator 接口的匿名内部类 ,  要求实现	compare 方法
+          //5. 先演示效果，再解释
+          //6. 这里体现了接口编程的方式 , 看看源码，就明白
+          //	源码分析
+          //(1) Arrays.sort(arr, new Comparator()
+          //(2) 最终到 TimSort 类的 private static <T> void binarySort(T[] a, int lo, int hi, int start,
+          //	Comparator<? super T> c)()
+          //(3) 执行到 binarySort 方法的代码,  会根据动态绑定机制 c.compare()执行我们传入的
+          //	匿名内部类的 compare ()
+          //	while (left < right) {
+          //		int mid = (left + right) >>> 1;
+          //		if (c.compare(pivot, a[mid]) < 0)
+          //			right = mid;
+          //		else
+          //			left = mid + 1;
+          //	}
+          //(4) new Comparator() {
+          //		@Override
+          //		public int compare(Object o1, Object o2) {
+          //			Integer i1 = (Integer) o1;
+          //			Integer i2 = (Integer) o2;
+          //			return i2 - i1;
+          //		}
+          //	}
+          //(5) public int compare(Object o1, Object o2) 返回的值>0 还是 <0
+          //	会影响整个排序结果, 这就充分体现了 接口编程+动态绑定+匿名内部类的综合使用
+          //	将来的底层框架和源码的使用方式，会非常常见
+          
+          //Arrays.sort(arr); // 默认排序方法
+          
+          //定制排序
+          Arrays.sort(arr, new Comparator() {
+              @Override
+          	public int compare(Object o1, Object o2) { 
+                  Integer i1 = (Integer) o1;
+          		Integer i2 = (Integer) o2; 
+                  return i2 - i1;
+         		}
+          });
+          System.out.println("===排序后==="); 
+          System.out.println(Arrays.toString(arr));
+      }
+  }
+  
+  ==================================================================================================
+  
+  package com.hspedu.arrays_;
+  
+  import java.util.Arrays; 
+  import java.util.Comparator;
+  
+  public class ArraysSortCustom {
+  	public static void main(String[] args) {
+  
+          int[] arr = {1, -1, 8, 0, 20};
+          //bubble01(arr);
+  
+          bubble02(arr, new Comparator() { 
+              @Override
+          	public int compare(Object o1, Object o2) {
+                  int i1 = (Integer) o1;
+          		int i2 = (Integer) o2;
+          		return i2 - i1;// return i2 - i1;
+  			}
+  		});
+  
+  
+  		System.out.println("==定制排序后的情况=="); 
+          System.out.println(Arrays.toString(arr));
+  	}
+  
+      //使用冒泡完成排序
+      public static void bubble01(int[] arr) { 
+          int temp = 0;
+          for (int i = 0; i < arr.length - 1; i++) {
+              for (int j = 0; j < arr.length - 1 - i; j++) {
+                  //从小到大
+                  if (arr[j] > arr[j + 1]) {
+                      temp = arr[j]; 
+                      arr[j] = arr[j + 1]; 
+                      arr[j + 1] = temp;
+                  }
+              }
+          }
+      }
+  
+  
+  	//结合冒泡 + 定制
+  	public static void bubble02(int[] arr, Comparator c) { 
+          int temp = 0;
+  		for (int i = 0; i < arr.length - 1; i++) {
+  			for (int j = 0; j < arr.length - 1 - i; j++) {
+  			//数组排序由 c.compare(arr[j], arr[j + 1])返回的值决定
+                  if (c.compare(arr[j], arr[j + 1]) > 0) {
+  					temp = arr[j]; 
+                      arr[j] = arr[j + 1]; 
+                      arr[j + 1] = temp;
+  				}
+  			}
+  		}
+  	}
+      
+  }
+  
+  ===============================================================================================
+  
+  package com.hspedu.arrays_;
+  import java.util.Arrays; 
+  import java.util.List;
+  
+  public class ArraysMethod02 {
+  	public static void main(String[] args) { 
+          Integer[] arr = {1, 2, 90, 123, 567};
+  		// (三)binarySearch 通过二分搜索法进行查找，要求必须排好
+          // 老韩解读
+          //1. 使用 binarySearch 二叉查找
+          //2. 要求该数组是有序的.  如果该数组是无序的，不能使用 binarySearch
+          //3. 如果数组中不存在该元素，就返回 return -(low + 1);	// key not found. 
+          int index = Arrays.binarySearch(arr, 567);
+          System.out.println("index=" + index);
+  
+  
+          //(四)copyOf 数组元素的复制
+          // 老韩解读
+          //1. 从 arr 数组中，拷贝 arr.length 个元素到 newArr 数组中
+          //2. 如果拷贝的长度 > arr.length 就在新数组的后面 增加 null
+          //3. 如果拷贝长度 < 0 就抛出异常 NegativeArraySizeException
+          //4. 该方法的底层使用的是 System.arraycopy() 
+          Integer[] newArr = Arrays.copyOf(arr, arr.length);
+          System.out.println("==拷贝执行完毕后==");
+          System.out.println(Arrays.toString(newArr));
+  
+  
+          //()fill 数组元素的填充
+          Integer[] num = new Integer[]{9,3,2};
+          //老韩解读
+          //1. 使用 99 去填充 num 数组，可以理解成是 替换 原来的元素
+          Arrays.fill(num, 99);
+          System.out.println("==num 数组填充后=="); 
+          System.out.println(Arrays.toString(num));
+  
+          //(六)equals 比较两个数组元素内容是否完全一致
+          Integer[] arr2 = {1, 2, 90, 123};
+          //老韩解读
+          //1. 如果 arr 和 arr2 数组的元素一样，则方法 true;
+          //2. 如果不是完全一样，就返回 false 
+          boolean equals = Arrays.equals(arr, arr2); 
+          System.out.println("equals=" + equals);
+  
+          //(七)asList 将一组值，转换成 list
+          //老韩解读
+          //1. asList 方法，会将 (2,3,4,5,6,1)数据转成一个 List 集合
+          //2. 返回的 asList  编译类型 List(接口)
+          //3. asList  运行类型 java.util.Arrays$ArrayList, 是 Arrays 类的
+          //	静态内部类 private static class ArrayList<E> extends AbstractList<E>
+          //	implements RandomAccess, java.io.Serializable 
+          List asList = Arrays.asList(2,3,4,5,6,1);
+          System.out.println("asList=" + asList);
+          System.out.println("asList 的运行类型" + asList.getClass());
+  
+      }
+  }
+  ```
+
+  
+
 ### 8. BigInteger类和BIgDecimal类
+
+- ![image-20210923203055822](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923203055822.png)
+
+- BigInteger 和BigDecimal 常见方法
+
+  ![image-20210923203647461](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923203647461.png)
+
+  - BigInteger 
+    1. 在对 BigInteger 进行加减乘除的时候，需要使用对应的方法，不能直接进行 + - * /
+    2. 可以创建一个 要操作的 BigInteger 然后进行相应操作
+    3. BigInteger 底层是将数据当成字符串，再将其转成BigInteger 
+
+  - BigDecimal 
+
+    1. 如果对 BigDecimal 进行运算，比如加减乘除，需要使用对应的方法
+
+    2. 创建一个需要操作的 BigDecimal 然后调用相应的方法即可
+
+    3. 除法注意，可能抛出异常 ArithmeticException
+
+       ```java
+       //System.out.println(bigDecimal.divide(bigDecimal2));//可能抛出异常 ArithmeticException
+       //在调用 divide 方法时，指定精度即可. BigDecimal.ROUND_CEILING
+       //如果有无限循环小数，就会保留 分子 的精度
+       System.out.println(bigDecimal.divide(bigDecimal2, BigDecimal.ROUND_CEILING));
+       ```
+
+       
 
