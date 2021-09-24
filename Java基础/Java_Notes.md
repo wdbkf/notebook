@@ -3089,7 +3089,7 @@ class Cat {
 
   ![image-20210923095831278](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210923095831278.png)
 
-  解释：第二天注意，三元运算符是一个整体，所以在运算时会提升精度，统一为Double，所以输出1.0！！
+  解释：第二题注意，三元运算符是一个整体，所以在运算时会提升精度，统一为Double，所以输出1.0！！
 
 - 包装类型和String 类型的相互转换
 
@@ -3827,4 +3827,501 @@ class Cat {
        ```
 
        
+
+## 第十三章 集合
+
+### 1. 集合框架体系
+
+- 集合
+
+  ![image-20210924165512532](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924165512532.png)
+
+- 集合的框架体系
+
+  Java 的集合类很多，主要分为两大类：
+
+  - ![image-20210924170417392](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924170417392.png)
+  - ![image-20210924170434797](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924170434797.png)
+
+  ```java
+  package com.hspedu.collection_;
+  
+  import java.util.ArrayList; 
+  import java.util.Collection; 
+  import java.util.HashMap; 
+  import java.util.Map;
+  
+  public class Collection_ { @SuppressWarnings({"all"})
+      public static void main(String[] args) {
+          //老韩解读
+          //1. 集合主要是两组(单列集合 , 双列集合)
+          //2. Collection  接口有两个重要的子接口 List Set ,  他们的实现子类都是单列集合
+          //3. Map 接口的实现子类 是双列集合，存放的 Key-Value
+          //4. 把老师梳理的两张图记住
+          //Collection
+          //Map
+          ArrayList arrayList = new ArrayList(); 
+          arrayList.add("jack"); 
+          arrayList.add("tom");
+  
+          HashMap hashMap = new HashMap(); 
+          hashMap.put("NO1", "北京");
+          hashMap.put("NO2", "上海");
+      }
+  }
+  ```
+
+  
+
+
+
+### 2. Collection
+
+#### 1. Collection 接口和常用方法
+
+- Collection 接口实现类的特点
+
+  ![image-20210924183136848](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924183136848.png)
+
+- Collection 接口常用方法,以实现子类 ArrayList 来演示
+
+  ![image-20210924183454050](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924183454050.png)
+
+- Collection 接口遍历元素方式 1-使用Iterator(迭代器)
+
+  ![image-20210924190241109](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924190241109.png)
+
+  ![image-20210924190604159](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924190604159.png)
+
+  ![image-20210924190650649](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924190650649.png)
+
+  ```java
+  package com.hspedu.collection_;
+  
+  import java.util.ArrayList;
+  import java.util.Collection;
+  import java.util.Iterator;
+  
+  public class CollectionIterator {
+      @SuppressWarnings({"all"})
+      public static void main(String[] args) {
+  
+          Collection col = new ArrayList();
+  
+          col.add(new Book("三国演义", "罗贯中", 10.1));
+          col.add(new Book("小李飞刀", "古龙", 5.1));
+          col.add(new Book("红楼梦", "曹雪芹", 34.6));
+  
+          //System.out.println("col=" + col);
+          //现在老师希望能够遍历 col 集合
+          //1. 先得到 col  对应的 迭代器
+          Iterator iterator = col.iterator();
+          //2. 使用 while 循环遍历
+          //	while (iterator.hasNext()) {//判断是否还有数据
+          //	//返回下一个元素，类型是 Object
+          //	Object obj = iterator.next();
+          //	System.out.println("obj=" + obj);
+          //	}
+          //老师教大家一个快捷键，快速生成 while =>  itit
+          //显示所有的快捷键的的快捷键   ctrl + j 
+          while (iterator.hasNext()) {
+              Object obj = iterator.next();
+              System.out.println("obj=" + obj);
+          }
+          //3. 当退出 while 循环后 ,  这时 iterator 迭代器，指向最后的元素
+          //	iterator.next(); //NoSuchElementException
+          //4. 如果希望再次遍历，需要重置我们的迭代器
+          iterator = col.iterator();
+          System.out.println("===第二次遍历==="); 
+          while (iterator.hasNext()) {
+              Object obj = iterator.next(); 
+              System.out.println("obj=" + obj);
+          }
+      }
+  }
+  
+  class Book {
+  	private String name; 
+      private String author; 
+      private double price;
+  
+      public Book(String name, String author, double price) {
+          this.name = name;
+      	this.author = author; 
+          this.price = price;
+      }
+      public String getName() { 
+          return name;
+      }
+  
+  
+      public void setName(String name) {
+          this.name = name;
+      }
+  
+  
+      public String getAuthor() { 
+          return author;
+      }
+  
+  
+      public void setAuthor(String author) {
+          this.author = author;
+      }
+  
+  
+      public double getPrice() { 
+          return price;
+      }
+  
+  
+      public void setPrice(double price) { 
+          this.price = price;
+      }
+  
+  
+      @Override
+      public String toString() {
+          return "Book{" +
+          "name='" + name + '\'' +
+          ", author='" + author + '\'' + ", price=" + price +
+          '}';
+      }
+  }
+  ```
+
+  
+
+- Collection 接口遍历对象方式 2-for 循环增强
+
+  ![image-20210924191209483](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924191209483.png)
+
+  ```java
+  package com.yt.collection_;
+  
+  import java.util.ArrayList;
+  import java.util.Collection;
+  
+  public class CollectionFor {
+      @SuppressWarnings({"all"})
+      public static void main(String[] args) {
+  
+          Collection col = new ArrayList();
+  
+          col.add(new Book("三国演义", "罗贯中", 10.1));
+          col.add(new Book("小李飞刀", "古龙", 5.1));
+          col.add(new Book("红楼梦", "曹雪芹", 34.6));
+  
+  
+          //1.使用增强for，在Collection集合
+          //2.增强for底层仍然是迭代器
+          //3.可以理解成就是简化版本的 迭代器遍历
+          //4.快捷方式 I 或 col.for
+  
+          for (Object book :col) {
+              System.out.println(book);
+          }
+  
+          //增强for，也可以直接在数组使用
+  
+      }
+  }
+  calss Book{}...
+  ```
+
+  
+
+#### 2. List 接口和常用方法
+
+- ![image-20210924194833960](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924194833960.png)
+
+- List 接口的常用方法
+
+  ```java
+  package com.hspedu.list_;
+  
+  import java.util.ArrayList; 
+  import java.util.List;
+  
+  public class ListMethod { @SuppressWarnings({"all"})
+      public static void main(String[] args) { 
+          List list = new ArrayList();
+      	list.add("张三丰");
+      	list.add("贾宝玉");
+      	//	void add(int index, Object ele):在 index 位置插入 ele 元素
+      	//在 index = 1 的位置插入一个对象
+          list.add(1, " 韩 顺 平 "); 
+          System.out.println("list=" + list);
+          //	boolean addAll(int index, Collection eles):从 index 位置开始将 eles 中的所有元素添加进来
+          List list2 = new ArrayList(); 
+          list2.add("jack");
+          list2.add("tom"); 
+          list.addAll(1, list2);
+          System.out.println("list=" + list);
+          //	Object get(int index):获取指定 index 位置的元素
+          //说过
+          //	int indexOf(Object obj):返回 obj 在集合中首次出现的位置
+          System.out.println(list.indexOf("tom"));//2
+          //	int lastIndexOf(Object obj):返回 obj 在当前集合中末次出现的位置
+          list.add(" 韩 顺 平 "); 
+          System.out.println("list=" + list);
+          System.out.println(list.lastIndexOf("韩顺平"));
+          //	Object remove(int index):移除指定 index 位置的元素，并返回此元素
+          list.remove(0); 
+          System.out.println("list=" + list);
+          //	Object set(int index, Object ele):设置指定 index 位置的元素为 ele ,  相当于是替换.
+          list.set(1, " 玛 丽 "); 
+          System.out.println("list=" + list);
+          //	List subList(int fromIndex, int toIndex):返回从 fromIndex 到 toIndex 位置的子集合
+          // 注意返回的子集合 fromIndex <= subList < toIndex
+          List returnlist = list.subList(0, 2); 
+          System.out.println("returnlist=" + returnlist);  
+      }
+  }
+  ```
+
+  
+
+- List 的三种遍历方式 [ArrayList, LinkedList,Vector]
+
+  ![image-20210924200923989](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924200923989.png)
+
+
+
+#### 3. ArrayList 底层结构和源码分析
+
+- ArrayList 的注意事项
+
+  <img src="E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924202754947.png" alt="image-20210924202754947" style="zoom:150%;" />
+
+- ArrayList 的底层操作机制源码分析(重点，难点.)
+
+  ![image-20210924202818228](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924202818228.png)
+
+  ```java
+  package com.hspedu.list_;
+  
+  import java.util.ArrayList;
+  
+      @SuppressWarnings({"all"})
+      public class ArrayListSource {
+      public static void main(String[] args) {
+          //老韩解读源码
+          //注意，注意，注意，Idea 默认情况下，Debug 显示的数据是简化后的，如果希望看到完整的数据
+          //需要做设置.
+          //使用无参构造器创建 ArrayList 对象
+          ArrayList list = new ArrayList(); 
+          //ArrayList list = new ArrayList(8);
+          //使用 for 给 list 集合添加 1-10 数据
+          for (int i = 1; i <= 10; i++) { 
+              list.add(i);
+          }
+          //使用 for 给 list 集合添加 11-15 数据
+          for (int i = 11; i <= 15; i++) { 
+              list.add(i);
+          }
+          list.add(100);
+          list.add(200); 
+          list.add(null);
+  
+      }
+  }
+  ```
+
+  示意图:
+
+  <img src="E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924212913848.png" alt="image-20210924212913848"  />
+
+  ![image-20210924212926036](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924212926036.png)
+
+  
+
+#### 4. Vector 底层结构和源码剖析 
+
+- Vector 的基本介绍
+
+  ![image-20210924223340978](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924223340978.png)
+
+- Vector 和ArrayList 的比较
+
+  ![image-20210924231125914](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924231125914.png)
+
+- Vector 源码剖析
+
+```java
+package com.hspedu.list_;
+
+import java.util.Vector;
+
+@SuppressWarnings({"all"})
+public class Vector_ {
+    public static void main(String[] args) {
+        //无参构造器
+        //有参数的构造
+        Vector vector = new Vector(8); 
+        for (int i = 0; i < 10; i++) {
+        	vector.add(i);
+        }
+        vector.add(100); 
+        System.out.println("vector=" + vector);
+        //老韩解读源码
+        //1. new Vector() 底层
+        /*
+        public Vector() {
+        	this(10);
+        }
+        补充：如果是	Vector vector = new Vector(8);
+        走的方法:
+        public Vector(int initialCapacity) {
+        	this(initialCapacity, 0);
+        }
+        
+        2.vector.add(i)
+        2.1//下面这个方法就添加数据到 vector 集合
+        public synchronized boolean add(E e) { 
+            modCount++; 
+            ensureCapacityHelper(elementCount + 1); //每次加 都要进去判断一下是否扩容
+            elementData[elementCount++] = e;
+            return true;
+        }
+        2.2//确定是否需要扩容 条件 ： minCapacity - elementData.length>0 
+        private void ensureCapacityHelper(int minCapacity) {
+            // overflow-conscious code
+            if (minCapacity - elementData.length > 0)
+            	grow(minCapacity); // 如要扩容 就走这个方法
+        }
+        2.3 //如果 需要的数组大小 不够用，就扩容 , 扩容的算法
+        //newCapacity = oldCapacity + ((capacityIncrement > 0) ?
+        //		capacityIncrement : oldCapacity);
+        //capacityIncrement默认为0，有个构造方法可以自定义扩容增量，传入参数，大于0就返回capacityIncrement；这里 0 > 0,返回 oldCapacity，就是扩容两倍！
+        
+        private void grow(int minCapacity) {
+            // overflow-conscious code
+            int oldCapacity = elementData.length;
+            int newCapacity = oldCapacity + ((capacityIncrement > 0) ?
+            capacityIncrement : oldCapacity);
+            if (newCapacity - minCapacity < 0) newCapacity = minCapacity;
+            if (newCapacity - MAX_ARRAY_SIZE > 0) newCapacity = hugeCapacity(minCapacity);
+            elementData = Arrays.copyOf(elementData, newCapacity);
+        }        */
+
+    }
+}
+```
+
+
+
+#### 5. LinkedList 底层结构
+
+- LinkedList 的全面说明
+
+  ![image-20210924234727592](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924234727592.png)
+
+- LinkedList 的底层操作机制
+
+  ![image-20210924234804927](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210924234804927.png)
+
+  ```java
+  public class LinkedList01 {
+      public static void main(String[] args) {
+      //模拟一个简单的双向链表
+  
+      	Node jack = new Node("jack");
+          Node tom = new Node("tom"); 
+          Node hsp = new Node("老韩");
+  
+          //连接三个结点，形成双向链表
+          //jack -> tom -> hsp 
+          jack.next = tom; 
+          tom.next = hsp;
+          //hsp -> tom -> jack
+          hsp.pre = tom; 
+          tom.pre = jack;
+  
+          Node first = jack;//让 first 引用指向 jack (把jack对象的地址给first),就是双向链表的头结点
+          Node last = hsp; //让 last 引用指向 hsp,就是双向链表的尾结点
+  
+          //演示，从头到尾进行遍历
+          System.out.println("===从头到尾进行遍历===");
+          while (true) {
+          	if(first == null) { 
+                  break;
+          	}
+          //输出 first  信息
+              System.out.println(first); 
+              first = first.next;
+          }
+  
+          //演示，从尾到头的遍历
+          System.out.println("====从尾到头的遍历===="); 
+          while (true) {
+          	if(last == null) {
+                  break;
+          	}
+          //输出 last  信息
+              System.out.println(last);
+              last = last.pre;
+          }
+  
+          //演示链表的添加对象/数据，是多么的方便
+          //要求，是在 tom --------- 老韩 之间，插入一个对象 smith
+  
+  
+          //1. 先创建一个 Node 结点，name 就是 smith 
+          Node smith = new Node("smith");
+          //下面就把 smith 加入到双向链表了
+          smith.next = hsp;
+          smith.pre = tom; 
+          hsp.pre = smith; 
+          tom.next = smith;
+  
+          //让 first  再次指向 jack
+          first = jack;//让 first 引用指向 jack,就是双向链表的头结点
+  
+          System.out.println("===从头到尾进行遍历==="); 
+          while (true) {
+          	if(first == null) {
+                  break;
+          	}
+          //输出 first  信息
+              System.out.println(first);
+              first = first.next;
+          }
+  
+          last = hsp; //让 last  重新指向最后一个结点
+          //演示，从尾到头的遍历
+          System.out.println("====从尾到头的遍历===="); 
+          while (true) {
+          	if(last == null) 
+                  break;
+          	}
+          //输出 last  信息
+          System.out.println(last);
+          last = last.pre;
+          }
+      }
+  }
+  
+  
+  //定义一个 Node 类，Node 对象 表示双向链表的一个结点
+  class Node {
+      public Object item; //真正存放数据
+      public Node next; //指向后一个结点
+      public Node pre; //指向前一个结点
+      public Node(Object name) {
+      	this.item = name;
+      }
+      public String toString() {
+      	return "Node name=" + item;
+      }
+  }
+  ```
+
+  
+
+
+
+### 3. Map
+
+### 4. Collections
 
