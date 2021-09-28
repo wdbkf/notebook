@@ -6144,3 +6144,568 @@ class CC extends BB {
 }
 ```
 
+
+
+## 第十五章 坦克大战[1]
+
+### 1. java绘图坐标体系
+
+- 坐标体系-介绍
+
+  ![image-20210928123758573](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928123758573.png)
+
+- 坐标体系-像素
+
+  ![image-20210928123821507](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928123821507.png)
+
+- 案例
+
+  ![image-20210928132711166](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928132711166.png)
+
+  ```java
+  package com.hspedu.draw;
+  
+  import javax.swing.*;
+  import java.awt.*;
+  
+  /**
+  *@author 韩顺平
+  *@version 1.0
+  *演示如何在面板上画出圆形
+  */ 
+  @SuppressWarnings({"all"})
+  public class DrawCircle extends JFrame { //JFrame 对应窗口,可以理解成是一个画框
+  
+      //定义一个面板
+      private MyPanel mp = null;
+  
+      public static void main(String[] args) {
+          new DrawCircle();
+          System.out.println("退出程序~");
+      }
+  
+      public DrawCircle() {//构造器
+          //初始化面板
+          mp = new MyPanel();
+          //把面板放入到窗口(画框) 
+          this.add(mp);
+          //设置窗口的大小
+          this.setSize(400, 300);
+          // 当 点 击 窗 口 的 小 ×， 程 序 完 全 退 出 . 
+          this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          this.setVisible(true);//可以显示
+      }
+  }
+  
+  //1.先定义一个 MyPanel,  继承 JPanel 类， 画图形，就在面板上画
+  class MyPanel extends JPanel {
+          //说明:
+      //1. MyPanel  对象就是一个画板
+      //2. Graphics g  把 g  理解成一支画笔
+      //3. Graphics  提供了很多绘图的方法
+      //Graphics g 
+      @Override
+      public void paint(Graphics g) {//绘图方法
+      	super.paint(g);//调用父类的方法完成初始化.
+      	System.out.println("paint 方法被调用了~");
+          //画出一个圆形.
+          //g.drawOval(10, 10, 100, 100);
+  
+          //演示绘制不同的图形..
+          //画直线 drawLine(int x1,int y1,int x2,int y2)
+          //g.drawLine(10, 10, 100, 100);
+          //画矩形边框 drawRect(int x, int y, int width, int height)
+          //g.drawRect(10, 10, 100, 100);
+          //画椭圆边框 drawOval(int x, int y, int width, int height)
+          //填充矩形 fillRect(int x, int y, int width, int height)
+          //设置画笔的颜色
+          //	g.setColor(Color.blue);
+          //	g.fillRect(10, 10, 100, 100);
+  
+  
+          //填充椭圆 fillOval(int x, int y, int width, int height)
+          //	g.setColor(Color.red);
+          //	g.fillOval(10, 10, 100, 100);
+  
+  
+          //画图片 drawImage(Image img, int x, int y, ..)
+          //1. 获取图片资源, /bg.png 表示在该项目的根目录去获取 bg.png 图片资源
+          //	Image image = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bg.png"));
+          //	g.drawImage(image, 10, 10, 175, 221, this);
+          //画字符串 drawString(String str, int x, int y)//写字
+          //给画笔设置颜色和字体g.setColor(Color.red);
+          g.setFont(new Font("隶书", Font.BOLD, 50));
+          //这里设置的 100， 100， 是 "北京你好"左下角
+          g.drawString("北京你好", 100, 100);
+          //设置画笔的字体 setFont(Font font)
+          //设置画笔的颜色 setColor(Color c)
+  	}
+  }
+  ```
+
+  
+
+### 2. java绘图技术
+
+- 绘图原理
+
+  ![image-20210928151931162](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928151931162.png)
+
+- Graphics 类
+
+  ![image-20210928152140631](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928152140631.png)
+
+- 绘出坦克
+
+  ```java
+  package com.yt.tankgame;
+  
+  /**
+   * @author Yt
+   * @version 1.0
+   */
+  public class Tank {
+      private int x;
+      private int y;
+  
+      public Tank(int x, int y) {
+          this.x = x;
+          this.y = y;
+      }
+  
+      public int getX() {
+          return x;
+      }
+  
+      public void setX(int x) {
+          this.x = x;
+      }
+  
+      public int getY() {
+          return y;
+      }
+  
+      public void setY(int y) {
+          this.y = y;
+      }
+  }
+  ==================================
+  package com.yt.tankgame;
+  
+  /**
+   * @author Yt
+   * @version 1.0
+   */
+  public class MyTank extends Tank {
+      public MyTank(int x, int y) {
+          super(x, y);
+      }
+  }
+  ===============================
+  package com.yt.tankgame;
+  
+  import javax.swing.*;
+  import java.awt.*;
+  
+  /**
+   * @author Yt
+   * @version 1.0
+   */
+  public class MyPanel extends JPanel {
+      MyTank mt = null;
+  
+      public MyPanel(){
+          mt = new MyTank(100,100);
+      }
+  
+      @Override
+      public void paint(Graphics g) {
+          super.paint(g);
+  
+          g.fillRect(0,0,500,600);
+  
+          Drawtank(mt.getX(),mt.getY(),g,0,0);
+  
+      }
+  
+      public void Drawtank(int x,int y,Graphics g,int direct,int type){
+  
+          switch (type){
+              case 0:
+                  g.setColor(Color.cyan);
+                  break;
+              case 1:
+                  g.setColor(Color.YELLOW);
+                  break;
+          }
+  
+          switch (direct){
+              case 0:
+                  g.fill3DRect(x, y, 10, 60, false);//画出坦克左边轮子
+                  g.fill3DRect(x + 30, y, 10, 60, false);//画出坦克右边轮子
+                  g.fill3DRect(x + 10, y + 10, 20, 40, false);//画出坦克盖子
+                  g.fillOval(x + 10, y + 20, 20, 20);//画出圆形盖子
+                  g.drawLine(x + 20, y + 30, x + 20, y);//画出炮筒
+                  break;
+              default:
+                  System.out.println("暂时没处理");
+          }
+  
+      }
+  }
+  =====================================
+  package com.yt.tankgame;
+  
+  import javax.swing.*;
+  
+  /**
+   * @author Yt
+   * @version 1.0
+   */
+  public class TankGame01 extends JFrame {
+  
+      private MyPanel mp = null;
+  
+      public TankGame01(){
+          mp = new MyPanel();
+          this.add(mp);//把面板(就是游戏的绘图区域)
+          this.setSize(500, 600);
+          this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          this.setVisible(true);
+      }
+  
+  
+      public static void main(String[] args){
+  
+          new TankGame01();
+      }
+  }
+  ```
+
+  
+
+### 3. java事件处理机制
+
+- 基本说明
+
+  ![image-20210928161202109](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928161202109.png)
+
+- 示意图
+
+  ![image-20210928161241250](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928161241250.png)
+
+- 机制分析
+
+  ![image-20210928161331061](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928161331061.png)
+
+- 事件处理机制深入理
+
+  ![image-20210928161553352](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928161553352.png)
+
+  ![image-20210928161809798](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928161809798.png)
+
+  ![image-20210928161837095](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928161837095.png)
+
+
+
+### 4. 坦克大战游戏(1.0版)
+
+- 见 IDEA.
+
+
+
+## 第十六章 多线程基础
+
+### 1. 线程介绍
+
+- 程序(program)
+
+  ![image-20210928190742761](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928190742761.png)
+
+- 进程
+
+  ![image-20210928190805327](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928190805327.png)
+
+- 什么是线程
+
+  ![image-20210928190824894](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928190824894.png)
+
+- 其他相关概念
+
+  ![image-20210928192026252](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928192026252.png)
+
+  ![image-20210928192058978](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928192058978.png)
+
+### 2. 线程创建
+
+- 创建线程的两种方式
+
+  ![image-20210928193039533](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928193039533.png)
+
+  1. 线程应用案例 1-继承Thread 类
+
+     ![image-20210928195516056](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928195516056.png)
+
+     ![image-20210928210640861](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928210640861.png)
+
+     ```java
+     package com.hspedu.threaduse;
+     
+     /**
+     *@author 韩顺平
+     *@version 1.0
+     *演示通过继承 Thread 类创建线程
+     */
+     public class Thread01 {
+         public static void main(String[] args) throws InterruptedException {
+             //创建 Cat 对象，可以当做线程使用
+             Cat cat = new Cat();
+     
+             //老韩读源码
+             /*
+             (1)
+             public synchronized void start() {
+             	start0();
+             } 
+             (2)
+             //start0() 是本地方法，是 JVM 调用,  底层是 c/c++实现
+             //真正实现多线程的效果， 是 start0(), 而不是 run 
+             private native void start0();
+             */
+     
+             cat.start();//启动线程-> 最终会执行 cat 的 run 方法
+     
+     
+     
+             //cat.run();//run 方法就是一个普通的方法, 没有真正的启动一个线程，就会把 run 方法执行完毕，才向下执行
+             
+             //说明: 当 main 线程启动一个子线程 Thread-0, 主线程不会阻塞,  会继续执行
+             //这时 主线程和子线程是交替执行..
+             System.out.println("主线程继续执行" + Thread.currentThread().getName());//名字 main 
+             for(int i = 0; i < 60; i++) {
+             	System.out.println("主线程 i=" + i);
+             	//让主线程休眠
+                 Thread.sleep(1000);
+             }
+         }
+     }
+     
+     
+     
+     //老韩说明
+     //1. 当一个类继承了 Thread  类， 该类就可以当做线程使用
+     //2. 我们会重写 run 方法，写上自己的业务代码
+     //3. run  Thread 类 实现了 Runnable 接口的 run 方法
+     /*
+     @Override
+     public void run() {
+     	if (target != null) {
+         	target.run();
+     	}
+     }
+     */
+     
+     class Cat extends Thread {
+     
+         int times = 0;
+         @Override
+         public void run() {//重写 run 方法，写上自己的业务逻辑
+     
+     
+             while (true) {
+                 //该线程每隔 1 秒。在控制台输出 “喵喵,  我是小猫咪”
+                 System.out.println("喵喵, 我是小猫咪" + (++times) + " 线程名=" + 	Thread.currentThread().getName());
+                 //让该线程休眠 1 秒 ctrl+alt+t 
+                 try {
+                     Thread.sleep(1000);
+                 } catch (InterruptedException e) { 
+                     e.printStackTrace();
+                 }
+                 if(times == 80) {
+                     break;//当 times 到 80,  退出 while, 这时线程也就退出..
+                 }
+             }
+         }
+     }
+     ```
+
+     ![image-20210928200616902](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928200616902.png)
+
+     
+
+  2. 线程应用案例 2-实现Runnable 接口
+
+     ![image-20210928203859550](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928203859550.png)
+
+     <img src="E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928203921249.png" alt="image-20210928203921249" style="zoom:67%;" />
+
+     ```java
+     package com.hspedu.threaduse;
+     /**
+     *@author 韩顺平
+     *@version 1.0
+     *通过实现接口 Runnable 来开发线程
+     */
+     public class Thread02 {
+         public static void main(String[] args) { 
+             Dog dog = new Dog();
+             //dog.start(); 这里不能调用 start
+             
+             //创建了 Thread 对象，把 dog 对象(实现 Runnable),放入 Thread 
+             Thread thread = new Thread(dog);
+             thread.start();
+     
+             //	Tiger tiger = new Tiger();//实现了 Runnable
+             //	ThreadProxy threadProxy = new ThreadProxy(tiger);
+             //	threadProxy.start();
+         }
+     }
+     
+     
+     class Animal {
+     }
+     
+     class Tiger extends Animal implements Runnable {
+     
+         @Override
+         public void run() {
+         	System.out.println("老虎嗷嗷叫	");
+         }
+     }
+     
+     
+     //线程代理类 , 模拟了一个极简的 Thread 类
+     class ThreadProxy implements Runnable {//你可以把 Proxy 类当做 ThreadProxy
+     
+     
+         private Runnable target = null;//属性，类型是 Runnable
+     
+         @Override
+         public void run() {
+         	if (target != null) {
+         		target.run();//动态绑定（运行类型 Tiger）
+         	}
+         }  
+         
+         public ThreadProxy(Runnable target) { 
+             this.target = target;
+         }
+     
+         public void start() {
+         	start0();//这个方法时真正实现多线程方法
+         }
+     
+         public void start0() { 
+             run();
+         }
+     }
+     
+     
+     
+     class Dog implements Runnable { //通过实现 Runnable 接口，开发线程
+     
+         int count = 0;
+     
+         @Override
+         public void run() { //普通方法
+             while (true) {
+         		System.out.println("小狗汪汪叫..hi" + (++count) + Thread.currentThread().getName());
+     
+                 //休眠 1 秒
+                 try {
+                 	Thread.sleep(1000);
+                     } catch (InterruptedException e) {
+                     	e.printStackTrace();
+                 }
+                 if (count == 10) {
+                     break;
+                 }
+             }
+         }
+     }
+     ```
+
+     
+
+- 继承 Thread vs 实现 Runnable 的区别
+
+  ![image-20210928210716985](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928210716985.png)
+
+### 3. 线程终止
+
+- 基本说明
+
+  ![image-20210928212928387](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928212928387.png)
+
+- 案例
+
+  ![image-20210928212950832](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928212950832.png)
+
+### 4. 线程方法
+
+- 常用方法第一组
+
+  ![image-20210928213855215](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928213855215.png)
+
+  - 注意事项和细节
+
+    ![image-20210928213939929](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928213939929.png)
+
+  - 应用案例
+
+    ![image-20210928215231177](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928215231177.png)
+
+- 常用方法第二组
+
+  ![image-20210928215257431](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928215257431.png)
+
+  - 案例
+
+    ![image-20210928215323486](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928215323486.png)
+
+
+
+### 5. 用户线程和守护线程
+
+![image-20210928221927417](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928221927417.png)
+
+- 案例
+
+  ![image-20210928221948861](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928221948861.png)
+
+
+
+
+
+### 6. 线程的生命周期
+
+- JDK 中用Thread.State 枚举表示了线程的几种状态
+
+  ![image-20210928223059664](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928223059664.png)
+
+- 线程状态转换图
+
+  ![image-20210928223157978](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928223157978.png)
+
+### 7. Synchronized
+
+- 线程同步机制
+
+  ![image-20210928225053676](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928225053676.png)
+
+  
+
+- 同步具体方法-Synchronized
+
+  ![image-20210928225131420](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20210928225131420.png)
+
+
+
+### 8. 互斥锁 
+
+### 9. 死锁
+
+
+
+
+
