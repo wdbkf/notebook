@@ -7380,7 +7380,7 @@ class CC extends BB {
 
   
   
-- 转换流-InputStreamReader
+- 转换流-InputStreamReader （要记住它的转换特性 很重要！！！）
 
   - 先看一个文件乱码问题，引出学习转换流必要性.
 
@@ -8044,7 +8044,500 @@ public class FileCopy {
   }
   ```
 
-## 第十八章
+## 第十八章 网络编程
+
+### 1. 网络基础
+
+- 网络的相关概念
+
+  - 网络通信
+
+    ![image-20211005202945640](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005202945640.png)
+
+  - 网络
+
+    ![image-20211005203249473](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005203249473.png)
+
+  - ip地址
+
+    ![image-20211005214542537](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005214542537.png)
+
+  - ipv4 地址分类
+
+    ![image-20211005215855640](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005215855640.png)
+
+    ![image-20211005215921432](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005215921432.png)
+
+  - 域名
+
+    ![image-20211005221801973](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005221801973.png)
+
+    说明：在网络开发中，不用使用0-1024的端口，已被占用！
+
+  - 网络通信协议
+
+    - 网络协议-数据的组织方式
+
+    ![image-20211005225219976](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005225219976.png)
+
+    - 协议(tcp/ip)
+
+      ![image-20211005225540852](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005225540852.png)
+
+    - 网络通信协议
+
+      ![image-20211005230940322](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005230940322.png)
+
+    ![image-20211005231118249](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005231118249.png)
+
+  - TCP  和 UDP
+
+    ![image-20211005233254513](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005233254513.png)
 
 
 
+### 2. InetAddress
+
+- 相关方法
+
+  ![image-20211005234300928](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211005234300928.png)
+
+- 应用案例
+
+  编写代码，获取计算机的主机名和 IP 地址相关 API
+
+  ```java
+  // 获 取 本 机 InetAddress 对 象   getLocalHost 
+  InetAddress localHost = InetAddress.getLocalHost(); 
+  System.out.println(localHost);
+  
+  //根据指定主机名/域名获取 ip 地址对象 getByName 
+  InetAddress host2 = InetAddress.getByName("ThinkPad-PC"); 
+  System.out.println(host2);
+  InetAddress host3 = InetAddress.getByName("www.hsp.com"); 
+  System.out.println(host3);
+  
+  //获取 InetAddress 对象的主机名 getHostName 
+  String host3Name = host3.getHostName(); 
+  System.out.println(host3Name);
+  
+  //获取 InetAddress 对象的地址 getHostAddress
+  String host3Address = host3.getHostAddress(); 
+  System.out.println(host3Address);
+  ```
+
+  
+
+### 3. Socket
+
+- 基本介绍
+
+  ![image-20211006000027831](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211006000027831.png)
+
+  示意图：
+
+  ![image-20211006000047765](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211006000047765.png)
+
+
+
+### 4. TCP编程
+
+- 基本介绍
+
+  ![image-20211006000223437](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211006000223437.png)
+
+  ![image-20211006000243142](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211006000243142.png)
+  
+  - 案例
+  
+    ![image-20211007173230549](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007173230549.png)
+  
+    ```java
+    package com.hspedu.socket;
+    
+    import java.io.IOException; 
+    import java.io.InputStream; 
+    import java.net.ServerSocket; 
+    import java.net.Socket;
+    
+    /**
+    *@author 韩顺平
+    *@version 1.0
+    *服务端
+    */
+    public class SocketTCP01Server {
+        public static void main(String[] args) throws IOException {
+            //思路
+            //1. 在本机 的 9999 端口监听, 等待连接
+            //	细节: 要求在本机没有其它服务在监听 9999
+            //	细节：这个 ServerSocket 可以通过 accept()  返回多个 Socket[多个客户端连接服务器的并发] 
+            ServerSocket serverSocket = new ServerSocket(9999);
+            System.out.println("服务端，在 9999 端口监听，等待连接..");
+            
+            //2. 当没有客户端连接 9999 端口时，程序会 阻塞, 等待连接
+            // 如果有客户端连接，则会返回 Socket 对象，程序继续
+            Socket socket = serverSocket.accept();
+            System.out.println("服务端 socket =" + socket.getClass());
+            
+            //3. 通过 socket.getInputStream() 读取客户端写入到数据通道的数据,  显示
+            InputStream inputStream = socket.getInputStream();
+            //4. IO 读取
+            byte[] buf = new byte[1024]; 
+            int readLen = 0;
+            while ((readLen = inputStream.read(buf)) != -1) {
+            	System.out.println(new String(buf, 0, readLen));//根据读取到的实际长度，显示内容.
+            }
+            //5.关闭流和 socket 
+            inputStream.close();
+            socket.close();
+            serverSocket.close();//关闭
+        }
+    }
+    
+    ===========================
+    import java.io.IOException; 
+    import java.io.OutputStream; 
+    import java.net.InetAddress; 
+    import java.net.Socket;
+    
+    /**
+    *@author 韩顺平
+    *@version 1.0
+    *客户端，发送 "hello, server" 给服务端
+    */
+    
+    public class SocketTCP01Client {
+        public static void main(String[] args) throws IOException {
+            //思路
+            //1. 连接服务端 (ip ,  端口）
+            //解读: 连接本机的 9999 端口,  如果连接成功，返回 Socket 对象
+            Socket socket = new Socket(InetAddress.getLocalHost(), 9999);
+            System.out.println("客户端 socket 返回=" + socket.getClass());
+            //2. 连接上后，生成 Socket,  通过 socket.getOutputStream()
+            //	得到 和 socket 对象关联的输出流对象
+            OutputStream outputStream = socket.getOutputStream();
+            //3. 通过输出流，写入数据到 数据通道
+            outputStream.write("hello, server".getBytes());
+            //4. 关闭流对象和 socket, 必须关闭
+            outputStream.close(); socket.close();
+            System.out.println("客户端退出	");
+        }
+    }    
+    ```
+  
+  - 案例2
+  
+    ![image-20211007212553743](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007212553743.png)
+  
+    思路：
+  
+    ![image-20211007212613086](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007212613086.png)
+  
+    ```java
+    package com.hspedu.socket;
+    
+    import java.io.IOException; 
+    import java.io.InputStream; 
+    import java.net.ServerSocket; 
+    import java.net.Socket;
+    
+    /**
+    *@author 韩顺平
+    *@version 1.0
+    *服务端
+    */
+    public class SocketTCP01Server {
+        public static void main(String[] args) throws IOException {
+            //思路
+            //1. 在本机 的 9999 端口监听, 等待连接
+            //	细节: 要求在本机没有其它服务在监听 9999
+            //	细节：这个 ServerSocket 可以通过 accept()  返回多个 Socket[多个客户端连接服务器的并发] 
+            ServerSocket serverSocket = new ServerSocket(9999);
+            System.out.println("服务端，在 9999 端口监听，等待连接..");
+            
+            //2. 当没有客户端连接 9999 端口时，程序会 阻塞, 等待连接
+            // 如果有客户端连接，则会返回 Socket 对象，程序继续
+            Socket socket = serverSocket.accept();
+            System.out.println("服务端 socket =" + socket.getClass());
+            
+            //3. 通过 socket.getInputStream() 读取客户端写入到数据通道的数据,  显示
+            InputStream inputStream = socket.getInputStream();
+            //4. IO 读取
+            byte[] buf = new byte[1024]; 
+            int readLen = 0;
+            while ((readLen = inputStream.read(buf)) != -1) {
+            	System.out.println(new String(buf, 0, readLen));//根据读取到的实际长度，显示内容.
+            }
+            
+            //5. 获取 socket 相关联的输出流
+    		OutputStream outputStream = socket.getOutputStream(); 
+            outputStream.write("hello, client".getBytes());
+    		//	设置结束标记
+    		socket.shutdownOutput();
+            
+            //6.关闭流和 socket 
+            outputStream.close();
+            inputStream.close();
+            socket.close();
+            serverSocket.close();//关闭
+        }
+    }
+    
+    ===========================
+    import java.io.IOException; 
+    import java.io.OutputStream; 
+    import java.net.InetAddress; 
+    import java.net.Socket;
+    
+    /**
+    *@author 韩顺平
+    *@version 1.0
+    *客户端，发送 "hello, server" 给服务端
+    */
+    
+    public class SocketTCP01Client {
+        public static void main(String[] args) throws IOException {
+            //思路
+            //1. 连接服务端 (ip ,  端口）
+            //解读: 连接本机的 9999 端口,  如果连接成功，返回 Socket 对象
+            Socket socket = new Socket(InetAddress.getLocalHost(), 9999);
+            System.out.println("客户端 socket 返回=" + socket.getClass());
+            //2. 连接上后，生成 Socket,  通过 socket.getOutputStream()
+            //	得到 和 socket 对象关联的输出流对象
+            OutputStream outputStream = socket.getOutputStream();
+            
+            //3. 通过输出流，写入数据到 数据通道
+            outputStream.write("hello, server".getBytes());
+            //	设置结束标记
+    		socket.shutdownOutput();
+            
+            //4. 获取和 socket 关联的输入流.  读取数据(字节)，并显示
+    		InputStream inputStream = socket.getInputStream(); 
+            byte[] buf = new byte[1024];
+    		int readLen = 0;
+    		while ((readLen = inputStream.read(buf)) != -1) { 
+                System.out.println(new String(buf, 0, readLen));
+    		}
+            
+            //5. 关闭流对象和 socket, 必须关闭
+            inputStream.close();
+            outputStream.close(); 
+            socket.close();
+            System.out.println("客户端退出	");
+        }
+    }
+    ```
+  
+  - 案例3
+  
+    ![image-20211007213148477](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007213148477.png)
+  
+    ```java
+    package com.yt.socket;
+    
+    import java.io.*;
+    import java.net.ServerSocket;
+    import java.net.Socket;
+    
+    /**
+     * @author Yt
+     * @version 1.0
+     * 服务端, 使用字符流方式读写
+     */
+    public class SocketTCP02Server {
+        public static void main(String[] args) throws IOException {
+            ServerSocket serverSocket = new ServerSocket(9999);
+            Socket socket = serverSocket.accept();
+    		//IO 读取, 使用字符流, 使用 InputStreamReader  将 inputStream 转成字符流
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String line = bufferedReader.readLine();
+            System.out.println(line);
+            //注意这里也可以用While循环来读取：
+            //        while((line = bufferedReader.readLine()) != null){
+    		//            System.out.println(line);
+    		//        }
+            //但是，如果客户端的写入是用 bufferedWriter.newLine() 来表示写入的内容结束，那么服务端执行第二次bufferedReader.readLine() 时就会因为客户端的写入没有相应的 bufferedWriter.newLine() 来表示写入的内容的结束，就会进入等待状态，不会结束，它不知道客户端的写入有没有结束，进而报错。 所以，如果要用While循环来读取客户端写入数据通道的内容，客户端的写入就要用 socket.shutdownOutput() 来表示写入的内容结束！！ (客户端要读取服务端写入的数据亦然！)
+            
+    
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            bufferedWriter.write("hello,client");
+            bufferedWriter.newLine(); // 插入一个换行符，表示回复内容的结束
+            bufferedWriter.flush(); //注意需要手动的 flush
+    //        socket.shutdownOutput();
+    
+            bufferedWriter.close();
+            bufferedReader.close();
+            socket.close();
+            serverSocket.close();
+    
+    
+        }
+    }
+    =====================================
+    package com.yt.socket;
+    
+    import java.io.*;
+    import java.net.InetAddress;
+    import java.net.Socket;
+    
+    /**
+     * @author Yt
+     * @version 1.0
+     * 客户端，发送 "hello, server" 给服务端， 使用字符流
+     */
+    public class SocketTCP02Client {
+        public static void main(String[] args) throws IOException {
+            Socket socket = new Socket(InetAddress.getLocalHost(), 9999);
+    
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            bufferedWriter.write("hello,server");
+            bufferedWriter.newLine();//插入一个换行符，表示写入的内容结束, 注意，要求对方使用 readLine()!!!!
+            bufferedWriter.flush();// 如果使用的字符流，需要手动刷新，否则数据不会写入数据通道
+    //        socket.shutdownOutput();
+    
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String line = bufferedReader.readLine();
+            System.out.println(line);
+    
+            bufferedReader.close();
+            bufferedWriter.close();
+            socket.close();
+    
+        }
+    }
+    
+    ```
+  
+    
+
+- netstat 指令
+
+  ![image-20211007234119223](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007234119223.png)
+
+
+
+- TCP 网络通讯不为人知的秘密
+
+  ![image-20211007234818274](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007234818274.png)
+
+  ![image-20211007234848809](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007234848809.png)
+
+
+
+### 5. UDP编程
+
+- 基本介绍
+
+  ![image-20211007235807898](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007235807898.png)
+
+  ![image-20211007235850437](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211007235850437.png)
+
+  
+
+- 基本流程
+
+  ![image-20211008000111635](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211008000111635.png)
+
+- 案例
+
+  ![image-20211008002819467](E:\Java_Notes\notebook\Java基础\Java_Notes.assets\image-20211008002819467-16336241021784.png)
+
+  ```java
+  import java.io.IOException; 
+  import java.net.DatagramPacket; 
+  import java.net.DatagramSocket; 
+  import java.net.InetAddress; 
+  import java.net.SocketException;
+  
+  /**
+  *@author 韩顺平
+  *@version 1.0
+  *UDP 接收端
+  */
+  public class UDPReceiverA {
+      public static void main(String[] args) throws IOException {
+          //1. 创建一个 DatagramSocket  对象，准备在 9999 接收数据
+          DatagramSocket socket = new DatagramSocket(9999);
+          //2. 构建一个 DatagramPacket  对象，准备接收数据
+          //	在前面讲解 UDP 协议时，老师说过一个数据包最大 64k 
+          byte[] buf = new byte[1024];
+          DatagramPacket packet = new DatagramPacket(buf, buf.length);
+          //3. 调用 接收方法,  将通过网络传输的 DatagramPacket  对象
+          //	填充到 packet 对象
+          //老师提示: 当有数据包发送到 本机的 9999 端口时，就会接收到数据
+          //	如果没有数据包发送到 本机的 9999 端口, 就会阻塞等待.
+          System.out.println("接收端 A 等待接收数据..");
+          socket.receive(packet);
+          //4. 可以把 packet  进行拆包，取出数据，并显示.
+          int length = packet.getLength();//实际接收到的数据字节长度
+          byte[] data = packet.getData();//接收到数据
+          String s = new String(data, 0, length);
+          System.out.println(s);
+  
+  
+          //===回复信息给 B 端
+          //将需要发送的数据，封装到 DatagramPacket 对象
+          data = "好的,  明天见".getBytes();
+          //说明: 封装的 DatagramPacket 对象 data 内容字节数组 , data.length , 主机(IP) ,  端口
+          packet =
+          	new DatagramPacket(data, data.length, InetAddress.getByName("192.168.12.1"), 9998);
+          socket.send(packet);//发送
+  
+          //5. 关闭资源
+          socket.close();
+          System.out.println("A 端退出...");
+  
+      }
+  } 
+  
+  =================================
+  import java.io.IOException;
+  import java.net.*;
+  
+  /**
+  *@author 韩顺平
+  *@version 1.0
+  *发送端 B ====> 也可以接收数据
+  */ @SuppressWarnings({"all"}) 
+  public class UDPSenderB {
+      public static void main(String[] args) throws IOException {
+  
+          //1.创建 DatagramSocket  对象，准备在 9998 端口 接收数据
+          DatagramSocket socket = new DatagramSocket(9998);
+  
+  
+          //2. 将需要发送的数据，封装到 DatagramPacket 对象
+          byte[] data = "hello  明天吃火锅~".getBytes(); //
+  
+  
+          //说明: 封装的 DatagramPacket 对象 data 内容字节数组 , data.length , 主机(IP) ,  端口
+          DatagramPacket packet =
+          	new DatagramPacket(data, data.length, InetAddress.getByName("192.168.12.1"), 9999);
+          socket.send(packet);
+  
+  
+          //3.=== 接收从 A 端回复的信息
+          //(1)	构建一个 DatagramPacket 对象，准备接收数据
+          //	在前面讲解 UDP 协议时，老师说过一个数据包最大 64k 
+          byte[] buf = new byte[1024];
+          packet = new DatagramPacket(buf, buf.length);
+          //(2)	调用 接收方法,  将通过网络传输的 DatagramPacket 对象
+          //	填充到 packet 对象
+          //老师提示: 当有数据包发送到 本机的 9998 端口时，就会接收到数据
+          //	如果没有数据包发送到 本机的 9998 端口, 就会阻塞等待. 
+          socket.receive(packet);
+  
+          //(3)	可以把 packet  进行拆包，取出数据，并显示.
+          int length = packet.getLength();//实际接收到的数据字节长度
+          data = packet.getData();//接收到数据
+          String s = new String(data, 0, length); 
+          System.out.println(s);
+  
+          //关闭资源
+          socket.close();
+          System.out.println("B 端退出");
+      }
+  }    
+  ```
+
+  
