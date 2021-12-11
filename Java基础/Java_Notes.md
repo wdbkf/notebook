@@ -12748,7 +12748,8 @@ public class Statement_ {
   }
   
   
-      //事务来解决@Test
+      //事务来解决
+      @Test
       public void useTransaction() {
   
           //操作转账的业务
@@ -12790,7 +12791,7 @@ public class Statement_ {
       }
   }
   ```
-
+  
   
 
 ### 5. 批处理
