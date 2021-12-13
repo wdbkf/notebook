@@ -723,7 +723,7 @@ public String testRedirect(){
 }
 ```
 
-![image-20211123220837969](E:\Java_Notes\notebook\SpringMVC\SpringMVC笔记.assets\image-20211123220837969.png)
+![image-20211123220837969](SpringMVC笔记.assets\image-20211123220837969.png)
 
 > 注：
 >
